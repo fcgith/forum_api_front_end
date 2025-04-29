@@ -61,14 +61,15 @@ async def root(request: Request):
         {
             "request": request,
             "is_authenticated": is_authenticated,
-            "username": username
+            "username": username,
+            "title": "Home - Forum API Frontend"
         },
         headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
     )
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_form(request: Request, success: str = None):
-    data = {"request": request, "success": success}
+    data = {"request": request, "success": success, "title": "Login - Forum API Frontend"}
 
     if success:
         data["success"] = "Registration successful"
@@ -106,7 +107,8 @@ async def login(request: Request, username: str = Form(...), password: str = For
                         "login.html",
                         {
                             "request": request,
-                            "message": "Invalid token data received"
+                            "message": "Invalid token data received",
+                            "title": "Login - Forum API Frontend"
                         },
                         headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                     )
@@ -126,7 +128,8 @@ async def login(request: Request, username: str = Form(...), password: str = For
                     "login.html",
                     {
                         "request": request,
-                        "message": error_message
+                        "message": error_message,
+                        "title": "Login - Forum API Frontend"
                     },
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                 )
@@ -136,7 +139,8 @@ async def login(request: Request, username: str = Form(...), password: str = For
             "login.html",
             {
                 "request": request,
-                "message": f"Error connecting to API: {str(e)}"
+                "message": f"Error connecting to API: {str(e)}",
+                "title": "Login - Forum API Frontend"
             },
             headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
         )
@@ -152,7 +156,7 @@ async def logout(request: Request):
 async def register_form(request: Request):
     return templates.TemplateResponse(
         "register.html",
-        {"request": request},
+        {"request": request, "title": "Register - Forum API Frontend"},
         headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
     )
 
@@ -194,7 +198,8 @@ async def register(
                 "register.html",
                 {
                     "request": request,
-                    "message": error_message
+                    "message": error_message,
+                    "title": "Register - Forum API Frontend"
                 },
                 headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
             )
@@ -204,7 +209,8 @@ async def register(
             "register.html",
             {
                 "request": request,
-                "message": f"Error connecting to API: {str(e)}"
+                "message": f"Error connecting to API: {str(e)}",
+                "title": "Register - Forum API Frontend"
             },
             headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
         )
@@ -222,7 +228,7 @@ async def get_user(request: Request, user_id: int):
                 user_data = response.json()
                 return templates.TemplateResponse(
                     "user.html",
-                    {"request": request, "user": user_data},
+                    {"request": request, "user": user_data, "title": "User Details - Forum API Frontend"},
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                 )
             else:
@@ -238,14 +244,14 @@ async def get_user(request: Request, user_id: int):
 
                 return templates.TemplateResponse(
                     "error.html",
-                    {"request": request, "message": error_message},
+                    {"request": request, "message": error_message, "title": "Error - Forum API Frontend"},
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                 )
 
     except httpx.RequestError as e:
         return templates.TemplateResponse(
             "error.html",
-            {"request": request, "message": f"Error connecting to API: {str(e)}"},
+            {"request": request, "message": f"Error connecting to API: {str(e)}", "title": "Error - Forum API Frontend"},
             headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
         )
 

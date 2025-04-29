@@ -1,6 +1,7 @@
 from typing import Optional
-
-from fastapi import FastAPI, Request, Form
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi.routing import APIRoute
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import Response, HTMLResponse, RedirectResponse
 import httpx
@@ -8,7 +9,10 @@ import uvicorn
 from itsdangerous import URLSafeTimedSerializer
 from pathlib import Path
 
-app = FastAPI()
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.exceptions import ExceptionMiddleware
+from starlette.responses import JSONResponse
+from starlette.routing import Match
 
 # Set up Jinja2 templates
 templates_dir = Path("templates")
@@ -19,11 +23,14 @@ templates = Jinja2Templates(directory=templates_dir)
 SECRET_KEY = "your-secure-secret-key"  # Replace with a secure key
 serializer = URLSafeTimedSerializer(SECRET_KEY)
 
+app = FastAPI()
+
 # Helper functions for session management
 def set_token_cookie(response: Response | RedirectResponse, access_token: str):
     """Set a signed access_token cookie in the response."""
     token_str = serializer.dumps({"access_token": access_token})
-    response.set_cookie(
+    response.set_cookie\
+    (
         key="access_token",
         value=token_str,
         httponly=True,  # Prevent JavaScript access

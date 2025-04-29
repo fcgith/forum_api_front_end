@@ -51,7 +51,7 @@ async def root(request: Request):
     if is_authenticated:
         async with httpx.AsyncClient() as client:
             headers = {"Cache-Control": "no-cache"}
-            response = await client.get(f"http://127.0.0.1:8000/auth/?token={access_token}", headers=headers)
+            response = await client.get(f"http://172.245.56.116:8000/auth/?token={access_token}", headers=headers)
 
             if response.status_code == 200:
                 username = response.json()["username"]
@@ -82,7 +82,7 @@ async def login_form(request: Request, success: str = None):
 
 @app.post("/login", response_class=HTMLResponse)
 async def login(request: Request, username: str = Form(...), password: str = Form(...)):
-    api_url = "http://127.0.0.1:8000/auth/login"  # Your API login endpoint
+    api_url = "http://172.245.56.116:8000/auth/login"  # Your API login endpoint
 
     try:
         async with httpx.AsyncClient() as client:
@@ -168,7 +168,7 @@ async def register(
     email: str = Form(...),
     birthdate: str = Form(...)
 ):
-    api_url = "http://127.0.0.1:8000/auth/register"  # Adjust to your API path
+    api_url = "http://172.245.56.116:8000/auth/register"  # Adjust to your API path
 
     try:
         async with httpx.AsyncClient() as client:
@@ -217,7 +217,7 @@ async def register(
 
 @app.get("/users/{user_id}", response_class=HTMLResponse)
 async def get_user(request: Request, user_id: int):
-    api_url = f"http://127.0.0.1:8000/users/{user_id}"
+    api_url = f"http://172.245.56.116:8000/users/{user_id}"
 
     try:
         async with httpx.AsyncClient() as client:

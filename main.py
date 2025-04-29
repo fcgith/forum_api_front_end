@@ -118,7 +118,7 @@ async def login(request: Request, username: str = Form(...), password: str = For
             else:
                 try:
                     error_data = response.json()
-                    error_message = error_data.get("message", f"Login failed: {response.status_code}")
+                    error_message = error_data.get("message", f"Login failed: {error_data["detail"]}")
                 except ValueError:
                     error_message = f"Login failed: {response.status_code}"
 

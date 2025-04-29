@@ -26,7 +26,7 @@
     <p>Already have an account? <a href="/login">Login here</a>.</p>
 
     {% if message %}
-        <p style="color: red;">{{ message }}</p>
+        <div style="color: red;">{{ message | safe }}</div>
     {% endif %}
 
 </body>

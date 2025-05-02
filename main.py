@@ -1,7 +1,5 @@
 from typing import Optional
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi import FastAPI, Request, Form, HTTPException
-from fastapi.routing import APIRoute
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import Response, HTMLResponse, RedirectResponse
 import httpx
@@ -9,23 +7,25 @@ import uvicorn
 from itsdangerous import URLSafeTimedSerializer
 from pathlib import Path
 
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.middleware.exceptions import ExceptionMiddleware
-from starlette.responses import JSONResponse
-from starlette.routing import Match
-
-# Set up Jinja2 templates
 templates_dir = Path("templates")
 templates_dir.mkdir(exist_ok=True)
 templates = Jinja2Templates(directory=templates_dir)
 
-# Secret key for signing cookies (use a secure, random key in production)
-SECRET_KEY = "your-secure-secret-key"  # Replace with a secure key
+SECRET_KEY = "your-secure-secret-key"
 serializer = URLSafeTimedSerializer(SECRET_KEY)
 
 app = FastAPI()
 
-# Helper functions for session management
+@app.exception_handler(404)
+async def custom_404_handler(request: Request, exc: HTTPException):
+    return templates.TemplateResponse\
+    (
+        "404.html",
+        {"request": request, "path": request.url.path},
+        status_code=404
+    )
+
+# Helper functions
 def set_token_cookie(response: Response | RedirectResponse, access_token: str):
     """Set a signed access_token cookie in the response."""
     token_str = serializer.dumps({"access_token": access_token})
@@ -33,19 +33,18 @@ def set_token_cookie(response: Response | RedirectResponse, access_token: str):
     (
         key="access_token",
         value=token_str,
-        httponly=True,  # Prevent JavaScript access
-        secure=False,   # Set to True in production with HTTPS
-        samesite="lax",  # Prevent CSRF
-        max_age=3600    # 1-hour expiry
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=3600*8    # 8 hours
     )
 
 def get_access_token(request: Request) -> Optional[str]:
-    """Retrieve and verify access_token from the cookie."""
     token_cookie = request.cookies.get("access_token")
     if not token_cookie:
         return None
     try:
-        token_data = serializer.loads(token_cookie, max_age=3600)  # 1-hour expiry
+        token_data = serializer.loads(token_cookie, max_age=3600*8)
         return token_data.get("access_token")
     except Exception:
         return None
@@ -93,7 +92,6 @@ async def login(request: Request, username: str = Form(...), password: str = For
 
     try:
         async with httpx.AsyncClient() as client:
-            # Prepare login data
             login_data = {"username": username, "password": password}
 
             # Make POST request to API
@@ -104,7 +102,6 @@ async def login(request: Request, username: str = Form(...), password: str = For
             )
 
             if response.status_code == 200:
-                # Successful login
                 auth_data = response.json()
                 access_token = auth_data.get("access_token")
                 token_type = auth_data.get("token_type")
@@ -120,7 +117,6 @@ async def login(request: Request, username: str = Form(...), password: str = For
                         headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                     )
 
-                # Create response and set token cookie
                 redirect_response = RedirectResponse(url="/", status_code=303)
                 set_token_cookie(redirect_response, access_token)
                 return redirect_response

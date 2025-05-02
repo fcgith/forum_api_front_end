@@ -88,7 +88,7 @@ async def login_form(request: Request, success: str = None):
 
 @app.post("/login", response_class=HTMLResponse)
 async def login(request: Request, username: str = Form(...), password: str = Form(...)):
-    api_url = "http://172.245.56.116:8000/auth/login"  # Your API login endpoint
+    api_url = "http://172.245.56.116:8000/auth/login"
 
     try:
         async with httpx.AsyncClient() as client:
@@ -150,7 +150,6 @@ async def login(request: Request, username: str = Form(...), password: str = For
 
 @app.get("/logout", response_class=HTMLResponse)
 async def logout(request: Request):
-    # Create response and clear token cookie
     response = RedirectResponse(url="/", status_code=303)
     response.delete_cookie(key="access_token")
     return response
@@ -171,7 +170,7 @@ async def register(
     email: str = Form(...),
     birthdate: str = Form(...)
 ):
-    api_url = "http://172.245.56.116:8000/auth/register"  # Adjust to your API path
+    api_url = "http://172.245.56.116:8000/auth/register"
 
     try:
         async with httpx.AsyncClient() as client:

@@ -8,14 +8,14 @@
                 {% if is_authenticated %}
                     <p class="lead mb-4">Hello, {{ username }}!</p>
                     <hr class="my-4">
-                    <p>You are currently logged in. You can browse the forum or <a href="/logout">logout</a>.</p>
+                    <p>You are currently logged in. You can browse the forum or <a href="/auth/logout">logout</a>.</p>
                 {% else %}
                     <p class="lead mb-4">Please login or register to access all features.</p>
                     <hr class="my-4">
                     <p>This is a simple frontend for the Forum API.</p>
                     <div class="d-grid gap-2 d-sm-flex justify-content-center mt-4">
-                        <a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
-                        <a class="btn btn-secondary btn-lg" href="/register" role="button">Register</a>
+                        <a class="btn btn-primary btn-lg" href="/auth/login" role="button">Login</a>
+                        <a class="btn btn-secondary btn-lg" href="/auth/register" role="button">Register</a>
                     </div>
                 {% endif %}
             </div>

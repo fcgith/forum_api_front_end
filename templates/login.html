@@ -2,7 +2,7 @@
 
 {% block content %}
     <h2 class="text-center mb-4">Welcome Back</h2>
-    <form method="post" action="/login">
+    <form method="post" action="/auth/login">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" required>
@@ -24,6 +24,6 @@
     {% endif %}
 
     <div class="text-center mt-3">
-        Don't have an account? <a href="/register">Register here</a>.
+        Don't have an account? <a href="/auth/register">Register here</a>.
     </div>
 {% endblock %}

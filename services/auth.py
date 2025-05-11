@@ -21,3 +21,10 @@ class AuthService:
                     data["is_authenticated"] = True
                     data["admin"] = True if data["admin"] > 0 else False
         return data
+
+    @classmethod
+    async def verify_logged_in(cls, request) -> bool:
+        with await AuthService.get_user_data_from_cookie(request) as data:
+            if data["is_authenticated"]:
+                return False
+        return True

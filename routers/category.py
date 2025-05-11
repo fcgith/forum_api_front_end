@@ -14,7 +14,7 @@ async def get_category(request: Request, category: int):
     user_data = await AuthService.get_user_data_from_cookie(request)
 
     if not user_data["is_authenticated"]:
-        return HTTPException(status_code=403, detail="Not authorized")
+        raise HTTPException(status_code=403, detail="Not authorized")
 
     if user_data["is_authenticated"]:
         async with httpx.AsyncClient() as client:
@@ -35,5 +35,5 @@ async def get_category(request: Request, category: int):
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                 )
             else:
-                raise HTTPException(status_code=500, detail="Error fetching topics")
-    return HTTPException(status_code=403, detail="Not authorized")
+                raise HTTPException(status_code=403, detail="Not authorized")
+    raise HTTPException(status_code=403, detail="Not authorized")

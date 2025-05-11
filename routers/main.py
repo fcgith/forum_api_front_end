@@ -1,5 +1,5 @@
 import httpx
-from fastapi import Request, APIRouter
+from fastapi import Request, APIRouter, HTTPException
 from fastapi.responses import HTMLResponse
 
 from services.auth import AuthService
@@ -17,16 +17,23 @@ async def index_page_logged_in(request, user_data):
         response = await client.get(f"{api_url}{token}", headers=headers)
         data = {"is_authenticated": True, "admin": False}
         if response.status_code == 200:
-            data["categories"] = response.json()
+            data["categories"] = response.json()  # Add await here
             data["admin"] = True if user_data["admin"] > 0 else False
-            print(data["categories"])
-            return data
+            data["title"] = "Categories - Forum API Frontend"
+            data["request"] = request
+            return templates.TemplateResponse(
+                "categories.html",
+                data,
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )
+        else:
+            raise HTTPException(status_code=500, detail="Error fetching categories")
 
 @router.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     user_data = await AuthService.get_user_data_from_cookie(request)
     if user_data["is_authenticated"]:
-        return index_page_logged_in(request, user_data)
+        return await index_page_logged_in(request, user_data)
 
     return templates.TemplateResponse(
         "index.html",

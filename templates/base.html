@@ -32,7 +32,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="/">Forum API</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,27 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/user/me">Profile</a>
+                        </li>
+                        {% if is_admin %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item" href="/admin/option1">Admin Option 1</a></li>
+                                    <li><a class="dropdown-item" href="/admin/option2">Admin Option 2</a></li>
+                                    <li><a class="dropdown-item" href="/admin/option3">Admin Option 3</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/admin/option4">Admin Option 4</a></li>
+                                    <li><a class="dropdown-item" href="/admin/option5">Admin Option 5</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="/auth/logout">Logout</a>
                         </li>
@@ -61,9 +82,9 @@
             {% block content %}{% endblock %}
         </div>
     </div>
-    <footer class="bg-light py-3 mt-5">
+    <footer class="bg-dark text-light py-3 mt-5">
         <div class="container-sm mx-auto" style="max-width: 600px;">
-            <p class="text-center text-muted mb-0">&copy; 2025 Forum API Frontend. All rights reserved.</p>
+            <p class="text-center text-light mb-0">&copy; 2025 Forum API Frontend. All rights reserved.</p>
         </div>
     </footer>
 

@@ -84,9 +84,7 @@ async def login(request: Request, username: str = Form(...), password: str = For
 
 @router.get("/logout", response_class=HTMLResponse)
 async def logout(request: Request):
-    response = RedirectResponse(url="/", status_code=303)
-    response.delete_cookie(key="access_token")
-    return response
+    return Cookies.delete_token_cookie()
 
 @router.get("/register", response_class=HTMLResponse)
 async def register_form(request: Request):

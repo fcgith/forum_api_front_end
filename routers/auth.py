@@ -10,9 +10,6 @@ router = APIRouter(tags=["auth"])
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_form(request: Request, success: str = None):
-    if not AuthService.verify_logged_in(request):
-        return RedirectResponse(url="/", status_code=303)
-
     data = {"request": request, "success": success, "title": "Login - Forum API Frontend"}
 
     if success:
@@ -26,9 +23,6 @@ async def login_form(request: Request, success: str = None):
 
 @router.post("/login", response_class=HTMLResponse)
 async def login(request: Request, username: str = Form(...), password: str = Form(...)):
-    if AuthService.verify_logged_in(request):
-        return RedirectResponse(url="/", status_code=303)
-
     api_url = "http://172.245.56.116:8000/auth/login"
 
     try:
@@ -91,15 +85,10 @@ async def login(request: Request, username: str = Form(...), password: str = For
 
 @router.get("/logout", response_class=HTMLResponse)
 async def logout(request: Request):
-    if not AuthService.verify_logged_in(request):
-        return RedirectResponse(url="/", status_code=303)
     return Cookies.delete_token_cookie()
 
 @router.get("/register", response_class=HTMLResponse)
 async def register_form(request: Request):
-    if AuthService.verify_logged_in(request):
-        return RedirectResponse(url="/", status_code=303)
-
     return templates.TemplateResponse(
         "register.html",
         {"request": request, "title": "Register - Forum API Frontend"},
@@ -114,9 +103,6 @@ async def register(
     email: str = Form(...),
     birthdate: str = Form(...)
 ):
-    if AuthService.verify_logged_in(request):
-        return RedirectResponse(url="/", status_code=303)
-
     api_url = "http://172.245.56.116:8000/auth/register"
 
     try:

@@ -1,6 +1,4 @@
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import HTMLResponse
-import httpx
 import uvicorn
 
 from routers.main import router as main_router

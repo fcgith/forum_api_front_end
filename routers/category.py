@@ -29,7 +29,7 @@ async def get_category(request: Request, category: int):
                          "topics": response_topics.json(),
                          "category": response_category.json(),
                          "is_authenticated": user_data["is_authenticated"],
-                         "adin": user_data["admin"],
+                         "admin": user_data["admin"],
                          "title": "Category - Forum API Frontend"
                      },
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}

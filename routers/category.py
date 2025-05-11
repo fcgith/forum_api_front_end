@@ -12,6 +12,10 @@ router = APIRouter()
 async def get_category(request: Request, category: int):
     token = Cookies.get_access_token_from_cookie(request)
     user_data = await AuthService.get_user_data_from_cookie(request)
+
+    if not user_data["is_authenticated"]:
+        return HTTPException(status_code=403, detail="Not authorized")
+
     if user_data["is_authenticated"]:
         async with httpx.AsyncClient() as client:
             headers = {"Cache-Control": "no-cache"}
@@ -24,6 +28,8 @@ async def get_category(request: Request, category: int):
                         "request": request,
                          "topics": response_topics.json(),
                          "category": response_category.json(),
+                         "is_authenticated": user_data["is_authenticated"],
+                         "adin": user_data["admin"],
                          "title": "Category - Forum API Frontend"
                      },
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}

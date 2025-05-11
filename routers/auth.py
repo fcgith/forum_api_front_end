@@ -10,7 +10,7 @@ router = APIRouter(tags=["auth"])
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_form(request: Request, success: str = None):
-    if AuthService.verify_logged_in(request):
+    if not AuthService.verify_logged_in(request):
         return RedirectResponse(url="/", status_code=303)
 
     data = {"request": request, "success": success, "title": "Login - Forum API Frontend"}

@@ -6,6 +6,7 @@ import uvicorn
 from routers.main import router as main_router
 from routers.auth import router as auth_router
 from routers.user import router as user_router
+from routers.category import router as categories_router
 
 from services.jinja import templates
 
@@ -14,6 +15,7 @@ app = FastAPI()
 app.include_router(main_router)
 app.include_router(auth_router, prefix="/auth")
 app.include_router(user_router, prefix="/user")
+app.include_router(categories_router, prefix="/categories")
 
 @app.exception_handler(404)
 async def custom_404_handler(request: Request, exc: HTTPException):

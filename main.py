@@ -1,18 +1,10 @@
 from typing import Optional
 from fastapi import FastAPI, Request, Form, HTTPException
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import Response, HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 import httpx
 import uvicorn
-from itsdangerous import URLSafeTimedSerializer
-from pathlib import Path
 
-templates_dir = Path("templates")
-templates_dir.mkdir(exist_ok=True)
-templates = Jinja2Templates(directory=templates_dir)
-
-SECRET_KEY = "your-secure-secret-key"
-serializer = URLSafeTimedSerializer(SECRET_KEY)
+from routers.main import templates
 
 app = FastAPI()
 
@@ -23,54 +15,6 @@ async def custom_404_handler(request: Request, exc: HTTPException):
         "404.html",
         {"request": request, "path": request.url.path},
         status_code=404
-    )
-
-# Helper functions
-def set_token_cookie(response: Response | RedirectResponse, access_token: str):
-    """Set a signed access_token cookie in the response."""
-    token_str = serializer.dumps({"access_token": access_token})
-    response.set_cookie\
-    (
-        key="access_token",
-        value=token_str,
-        httponly=True,
-        secure=False,
-        samesite="lax",
-        max_age=3600*8    # 8 hours
-    )
-
-def get_access_token(request: Request) -> Optional[str]:
-    token_cookie = request.cookies.get("access_token")
-    if not token_cookie:
-        return None
-    try:
-        token_data = serializer.loads(token_cookie, max_age=3600*8)
-        return token_data.get("access_token")
-    except Exception:
-        return None
-
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request):
-    access_token = get_access_token(request)
-    is_authenticated = access_token is not None
-    username = "Error"
-    if is_authenticated:
-        async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            response = await client.get(f"http://172.245.56.116:8000/auth/?token={access_token}", headers=headers)
-
-            if response.status_code == 200:
-                username = response.json()["username"]
-
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "is_authenticated": is_authenticated,
-            "username": username,
-            "title": "Home - Forum API Frontend"
-        },
-        headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
     )
 
 @app.get("/login", response_class=HTMLResponse)

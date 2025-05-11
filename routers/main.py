@@ -1,0 +1,38 @@
+import httpx
+from fastapi import Request, APIRouter
+from fastapi.responses import HTMLResponse
+from pathlib import Path
+
+from fastapi.templating import Jinja2Templates
+
+from services.cookies import Cookies
+
+router = APIRouter()
+
+templates_dir = Path("../templates")
+templates_dir.mkdir(exist_ok=True)
+templates = Jinja2Templates(directory=templates_dir)
+
+@router.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    access_token = Cookies.get_access_token_from_cookie(request)
+    is_authenticated = access_token is not None
+    username = "Error"
+    if is_authenticated:
+        async with httpx.AsyncClient() as client:
+            headers = {"Cache-Control": "no-cache"}
+            response = await client.get(f"http://172.245.56.116:8000/auth/?token={access_token}", headers=headers)
+
+            if response.status_code == 200:
+                username = response.json()["username"]
+
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "is_authenticated": is_authenticated,
+            "username": username,
+            "title": "Home - Forum API Frontend"
+        },
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+    )

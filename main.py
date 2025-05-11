@@ -30,7 +30,16 @@ async def custom_403_handler(request: Request, exc: HTTPException):
     (
         "403.html",
         {"request": request, "path": request.url.path},
-        status_code=404
+        status_code=403
+    )
+
+@app.exception_handler(500)
+async def custom_500_handler(request: Request, exc: HTTPException):
+    return templates.TemplateResponse\
+    (
+        "500.html",
+        {"request": request, "path": request.url.path},
+        status_code=500
     )
 
 if __name__ == "__main__":

@@ -1,17 +1,11 @@
 import httpx
 from fastapi import Request, APIRouter
 from fastapi.responses import HTMLResponse
-from pathlib import Path
 
-from fastapi.templating import Jinja2Templates
-
+from services.jinja import templates
 from services.cookies import Cookies
 
-router = APIRouter()
-
-templates_dir = Path("../templates")
-templates_dir.mkdir(exist_ok=True)
-templates = Jinja2Templates(directory=templates_dir)
+router = APIRouter(tags=["main"])
 
 @router.get("/", response_class=HTMLResponse)
 async def root(request: Request):

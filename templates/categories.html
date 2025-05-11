@@ -21,14 +21,14 @@
                         <small class="text-muted">
                             <i class="bi bi-chat-square-text"></i> {{ category.topics_count | default(0) }} Topics
                         </small>
-                        <i class="bi bi-arrow-bar-right text-secondary arrow-icon"></i>
+                        <i class="bi bi-arrow-bar-right text-secondary arrow-icon" style="font-size: 1.5rem;"></i>
                     </div>
                 </a>
             {% endfor %}
         </div>
     {% else %}
         <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle me-2"></i> No categories found. Check back later!
+            <i class="bi bi-info-circle me-2" style="font-size: 1.5rem;"></i> No categories found. Check back later!
         </div>
     {% endif %}
 </div>

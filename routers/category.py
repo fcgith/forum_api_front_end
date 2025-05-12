@@ -1,40 +1,12 @@
-import httpx
-from fastapi import APIRouter, Response, Request, HTTPException
+from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
-
-from services.auth import AuthService
-from services.cookies import Cookies
-from services.errors import not_authorized
-from services.jinja import templates
+from services.categories import CategoryService
 
 router = APIRouter()
 
 @router.get("/{category}", response_class=HTMLResponse)
 async def get_category(request: Request, category: int):
-    token = Cookies.get_access_token_from_cookie(request)
-    data = await AuthService.get_user_data_from_cookie(request)
-
-    if data["is_authenticated"]:
-        async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            response_category = await client.get(f"http://172.245.56.116:8000/categories/{category}?token={token}", headers=headers)
-            response_topics = await client.get(f"http://172.245.56.116:8000/categories/{category}/topics?token={token}", headers=headers)
-            if response_category.status_code == 200 and response_topics.status_code == 200:
-                data["topics"] = response_topics.json()
-                data["category"] = response_category.json()
-                data["admin"] = True if data.get("admin") > 0 else False
-                data["title"] = "Category - Forum API Frontend"
-                data["request"] = request
-                return templates.TemplateResponse(
-                    "category.html",
-                    data,
-                    headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
-                )
-            else:
-                if response_category.status_code == 403 or response_topics.status_code == 403:
-                    raise not_authorized
-
-    raise not_authorized
+    return CategoryService.get_category_by_id(request, category)
 
 @router.get("/{category}/addtopic", response_class=HTMLResponse)
 async def get_topic(request: Request, category: int):

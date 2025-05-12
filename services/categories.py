@@ -63,3 +63,7 @@ class CategoryService:
                         raise not_authorized
 
         raise not_authorized
+
+    @classmethod
+    async def get_topic_form_post(cls, request, name: str, description: str, hidden: int):
+        pass

@@ -35,7 +35,7 @@ class AuthService:
 
     @classmethod
     async def login_form(cls, request, success: str = None):
-        with cls.get_user_data_from_cookie(request) as data:
+        async with cls.get_user_data_from_cookie(request) as data:
             if data["is_authenticated"]:
                 return RedirectResponse(url="/", status_code=303)
         data = {"request": request, "success": success, "title": "Login - Forum API Frontend"}

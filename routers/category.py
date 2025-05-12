@@ -4,6 +4,7 @@ from fastapi.responses import HTMLResponse
 
 from services.auth import AuthService
 from services.cookies import Cookies
+from services.errors import not_authorized
 from services.jinja import templates
 
 router = APIRouter()
@@ -14,7 +15,7 @@ async def get_category(request: Request, category: int):
     data = await AuthService.get_user_data_from_cookie(request)
 
     if not data["is_authenticated"]:
-        raise HTTPException(status_code=403, detail="Not authorized")
+        raise not_authorized
 
     if data["is_authenticated"]:
         async with httpx.AsyncClient() as client:
@@ -33,5 +34,7 @@ async def get_category(request: Request, category: int):
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                 )
             else:
-                raise HTTPException(status_code=403, detail="Not authorized")
+                if response_category.status_code == 403 or response_topics.status_code == 403:
+                    raise not_authorized
+
     raise HTTPException(status_code=403, detail="Not authorized")

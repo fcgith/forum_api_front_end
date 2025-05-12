@@ -11,27 +11,25 @@ router = APIRouter()
 @router.get("/{category}", response_class=HTMLResponse)
 async def get_category(request: Request, category: int):
     token = Cookies.get_access_token_from_cookie(request)
-    user_data = await AuthService.get_user_data_from_cookie(request)
+    data = await AuthService.get_user_data_from_cookie(request)
 
-    if not user_data["is_authenticated"]:
+    if not data["is_authenticated"]:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    if user_data["is_authenticated"]:
+    if data["is_authenticated"]:
         async with httpx.AsyncClient() as client:
             headers = {"Cache-Control": "no-cache"}
             response_category = await client.get(f"http://172.245.56.116:8000/categories/{category}?token={token}", headers=headers)
             response_topics = await client.get(f"http://172.245.56.116:8000/categories/{category}/topics?token={token}", headers=headers)
             if response_category.status_code == 200 and response_topics.status_code == 200:
+                data["topics"] = response_topics.json()
+                data["category"] = response_category.json()
+                data["admin"] = True if data.get("admin") > 0 else False
+                data["title"] = "Category - Forum API Frontend"
+                data["request"] = request
                 return templates.TemplateResponse(
                     "category.html",
-                    {
-                        "request": request,
-                         "topics": response_topics.json(),
-                         "category": response_category.json(),
-                         "is_authenticated": user_data["is_authenticated"],
-                         "admin": user_data["admin"],
-                         "title": "Category - Forum API Frontend"
-                     },
+                    data,
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                 )
             else:

@@ -10,7 +10,7 @@ class AuthService:
         access_token = Cookies.get_access_token_from_cookie(request)
         is_authenticated = access_token is not None
 
-        data = {"is_authenticated": False}
+        data = {"is_authenticated": False, "admin": False}
         if is_authenticated:
             async with httpx.AsyncClient() as client:
                 headers = {"Cache-Control": "no-cache"}

@@ -121,7 +121,7 @@ async def register(
             )
 
             if response.status_code == 200:
-                return RedirectResponse(url="auth/login?success=true", status_code=303)
+                return RedirectResponse(url="/auth/login?success=true", status_code=303)
 
             try:
                 error_data = response.json()

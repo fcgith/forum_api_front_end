@@ -22,7 +22,7 @@ async def logout(request: Request):
 
 @router.get("/register", response_class=HTMLResponse)
 async def register_form(request: Request):
-    return AuthService.register_form(request)
+    return await AuthService.register_form(request)
 
 @router.post("/register", response_class=HTMLResponse)
 async def register(
@@ -32,4 +32,4 @@ async def register(
     email: str = Form(...),
     birthdate: str = Form(...)
 ):
-    return AuthService.register_form_post(request, username, password, email, birthdate)
+    return await AuthService.register_form_post(request, username, password, email, birthdate)

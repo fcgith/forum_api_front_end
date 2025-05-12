@@ -3,6 +3,7 @@ from fastapi import Request, APIRouter, HTTPException
 from fastapi.responses import HTMLResponse
 
 from services.auth import AuthService
+from services.errors import internal_error
 from services.jinja import templates
 from services.cookies import Cookies
 
@@ -15,11 +16,10 @@ async def index_page_logged_in(request, user_data):
     async with httpx.AsyncClient() as client:
         headers = {"Cache-Control": "no-cache"}
         response = await client.get(f"{api_url}{token}", headers=headers)
-        data = {"is_authenticated": True, "admin": False}
+        data = {"is_authenticated": True, "admin": True if user_data["admin"] > 0 else False}
         if response.status_code == 200:
-            data["categories"] = response.json()  # Add await here
-            data["admin"] = True if user_data["admin"] > 0 else False
-            data["title"] = "Categories - Forum API Frontend"
+            data["categories"] = response.json()
+            data["title"] = "Home/Categories - Forum API Frontend"
             data["request"] = request
             return templates.TemplateResponse(
                 "categories.html",
@@ -27,7 +27,7 @@ async def index_page_logged_in(request, user_data):
                 headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
             )
         else:
-            raise HTTPException(status_code=500, detail="Error fetching categories")
+            raise internal_error
 
 @router.get("/", response_class=HTMLResponse)
 async def root(request: Request):

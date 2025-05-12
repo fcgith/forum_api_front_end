@@ -2,7 +2,6 @@ from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 import httpx
 
-from services.auth import AuthService
 from services.jinja import templates
 from services.cookies import Cookies
 

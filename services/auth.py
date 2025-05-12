@@ -1,6 +1,7 @@
 import httpx
 
 from services.cookies import Cookies
+from services.errors import not_found, not_authorized
 
 
 class AuthService:
@@ -23,8 +24,8 @@ class AuthService:
         return data
 
     @classmethod
-    async def verify_logged_in(cls, request) -> bool:
-        with await AuthService.get_user_data_from_cookie(request) as data:
+    async def verify_logged_in(cls, request) -> dict:
+        with await cls.get_user_data_from_cookie(request) as data:
             if data["is_authenticated"]:
-                return False
-        return True
+                return data
+        raise not_authorized

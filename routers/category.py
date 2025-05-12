@@ -35,3 +35,7 @@ async def get_category(request: Request, category: int):
                     raise not_authorized
 
     raise not_authorized
+
+@router.get("/{category}/addtopic", response_class=HTMLResponse)
+async def get_topic(request: Request, category: int):
+    return CategoryService.get_topic_form(request, category)

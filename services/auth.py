@@ -11,7 +11,7 @@ class AuthService:
 
     @classmethod
     async def get_user_data_from_cookie(cls, request):
-        access_token = Cookies.get_access_token_from_cookie(request)
+        access_token = await Cookies.get_access_token_from_cookie(request)
         is_authenticated = access_token is not None
 
         data = {"is_authenticated": False, "admin": False}
@@ -51,7 +51,7 @@ class AuthService:
 
     @classmethod
     async def login_form_post(cls, request, username, password):
-        with cls.get_user_data_from_cookie(request) as data:
+        with await cls.get_user_data_from_cookie(request) as data:
             if data["is_authenticated"]:
                 return RedirectResponse(url="/", status_code=303)
 
@@ -117,7 +117,7 @@ class AuthService:
 
     @classmethod
     async def register_form(cls, request):
-        with cls.get_user_data_from_cookie(request) as data:
+        with await cls.get_user_data_from_cookie(request) as data:
             if data["is_authenticated"]:
                 return RedirectResponse(url="/", status_code=303)
 
@@ -129,7 +129,7 @@ class AuthService:
 
     @classmethod
     async def register_form_post(cls, request, username, password, email, birthdate):
-        with cls.get_user_data_from_cookie(request) as data:
+        with await cls.get_user_data_from_cookie(request) as data:
             if data["is_authenticated"]:
                 return RedirectResponse(url="/", status_code=303)
 

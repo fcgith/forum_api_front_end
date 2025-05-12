@@ -10,8 +10,8 @@ from services.jinja import templates
 class AuthService:
 
     @classmethod
-    async def get_user_data_from_cookie(cls, request):
-        access_token = await Cookies.get_access_token_from_cookie(request)
+    async def get_user_data_from_cookie(cls, request) -> dict:
+        access_token = Cookies.get_access_token_from_cookie(request)
         is_authenticated = access_token is not None
 
         data = {"is_authenticated": False, "admin": False}
@@ -24,20 +24,22 @@ class AuthService:
                     data = response.json()
                     data["is_authenticated"] = True
                     data["admin"] = True if data["admin"] > 0 else False
+                return data
         return data
 
     @classmethod
     async def verify_logged_in(cls, request) -> dict:
-        with await cls.get_user_data_from_cookie(request) as data:
-            if data["is_authenticated"]:
-                return data
+        data = await cls.get_user_data_from_cookie(request)
+        if data["is_authenticated"]:
+            return data
         raise not_authorized
 
     @classmethod
     async def login_form(cls, request, success: str = None):
-        async with await cls.get_user_data_from_cookie(request) as data:
-            if data["is_authenticated"]:
-                return RedirectResponse(url="/", status_code=303)
+        data = await cls.get_user_data_from_cookie(request)
+        if data.get("is_authenticated"):
+            return RedirectResponse(url="/", status_code=303)
+
         data = {"request": request, "success": success, "title": "Login - Forum API Frontend"}
 
         if success:
@@ -51,9 +53,9 @@ class AuthService:
 
     @classmethod
     async def login_form_post(cls, request, username, password):
-        with await cls.get_user_data_from_cookie(request) as data:
-            if data["is_authenticated"]:
-                return RedirectResponse(url="/", status_code=303)
+        data = await cls.get_user_data_from_cookie(request)
+        if data["is_authenticated"]:
+            return RedirectResponse(url="/", status_code=303)
 
         api_url = "http://172.245.56.116:8000/auth/login"
 
@@ -117,9 +119,9 @@ class AuthService:
 
     @classmethod
     async def register_form(cls, request):
-        with await cls.get_user_data_from_cookie(request) as data:
-            if data["is_authenticated"]:
-                return RedirectResponse(url="/", status_code=303)
+        data = await cls.get_user_data_from_cookie(request)
+        if data["is_authenticated"]:
+            return RedirectResponse(url="/", status_code=303)
 
         return templates.TemplateResponse(
             "register.html",
@@ -129,9 +131,9 @@ class AuthService:
 
     @classmethod
     async def register_form_post(cls, request, username, password, email, birthdate):
-        with await cls.get_user_data_from_cookie(request) as data:
-            if data["is_authenticated"]:
-                return RedirectResponse(url="/", status_code=303)
+        data = await cls.get_user_data_from_cookie(request)
+        if data["is_authenticated"]:
+            return RedirectResponse(url="/", status_code=303)
 
         api_url = "http://172.245.56.116:8000/auth/register"
 

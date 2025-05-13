@@ -14,4 +14,4 @@ async def get_topic(request: Request, category: int):
 
 @router.post("/{category}/new-topic", response_class=HTMLResponse)
 async def get_topic_post(request: Request, category: int):
-    return await CategoryService.get_topic_form_post(request, category)
+    return await CategoryService.topic_form_post(request, category)

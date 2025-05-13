@@ -1,4 +1,3 @@
-import fastapi
 import httpx
 from fastapi.responses import RedirectResponse
 

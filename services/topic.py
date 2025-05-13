@@ -2,6 +2,7 @@ import httpx
 from fastapi import Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
+from services.auth import AuthService
 from services.errors import not_authorized, internal_error
 from services.jinja import templates
 from services.cookies import Cookies
@@ -9,13 +10,13 @@ from services.cookies import Cookies
 class TopicService:
     @classmethod
     async def get_topic(cls, request: Request, topic_id: int):
-        data = {"request": request, "title": "Topic - Forum API Frontend"}
-        
+
         # Get authentication status
         token = Cookies.get_access_token_from_cookie(request)
-        is_authenticated = token is not None
-        data["is_authenticated"] = is_authenticated
-        
+        data = await AuthService.verify_logged_in(request)
+        data["request"] = request
+        data["title"] = "Topic - Forum API Frontend"
+
         headers = {}
         if token:
             headers["Authorization"] = f"Bearer {token}"

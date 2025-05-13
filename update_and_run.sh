@@ -13,5 +13,5 @@ while true; do
         echo "[$(date)] Git pull failed"
     fi
     echo "[$(date)] Sleeping for 300 seconds"
-    sleep 300
+    sleep 60
 done

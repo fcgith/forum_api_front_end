@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+        <div class="container-fluid px-4 py-3">
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <a href="/" class="text-secondary text-decoration-none">
+                            <i class="bi bi-house-door"></i>
+                        </a>
+                        <i class="bi bi-chevron-right text-muted small"></i>
+                        <a href="/categories" class="text-secondary text-decoration-none">Categories</a>
+                        <i class="bi bi-chevron-right text-muted small"></i>
+                        <a href="/categories/{{ topic.category_id }}" class="text-secondary text-decoration-none">{{ topic.category_name }}</a>
+                        <i class="bi bi-chevron-right text-muted small"></i>
+                        <span class="text-primary">{{ topic.name }}</span>
+                    </div>
+                    <h1 class="display-5 fw-bold">{{ topic.name }}</h1>
+                </div>
+            </div>
+
+            <!-- Topic Content -->
+            <div class="card mb-4 border-primary">
+                <div class="card-header bg-primary bg-opacity-10 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-chat-square-text fs-4"></i>
+                        <span class="fw-bold">Topic</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 small text-muted">
+                        <i class="bi bi-calendar-event"></i> {{ topic.date }}
+                        {% if topic.user_name %}
+                        <span class="mx-1">•</span>
+                        <i class="bi bi-person"></i> {{ topic.user_name }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ topic.content }}</p>
+                </div>
+            </div>
+
+            <!-- Replies Section -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <span class="badge bg-primary rounded-pill">
+                        <i class="bi bi-chat me-1"></i> {{ topic.replies_count | default(0) }} Replies
+                    </span>
+                </div>
+                {% if is_authenticated %}
+                <a href="/topics/{{ topic.id }}/reply" class="btn btn-primary">
+                    <i class="bi bi-reply me-1"></i> Reply
+                </a>
+                {% endif %}
+            </div>
+
+            {% if replies %}
+                <div class="replies-container">
+                    {% for reply in replies %}
+                    {% if reply.best_reply == 1 %}
+                            <div class="card mb-3 border-success">
+                                <div class="card-header bg-success bg-opacity-10 d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-reply fs-5"></i>
+                                        <span class="fw-bold">Reply #{{ loop.index }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 small text-muted">
+                                        <i class="bi bi-calendar-event"></i> {{ reply.date }}
+                                        {% if reply.user_name %}
+                                        <span class="mx-1">•</span>
+                                        <i class="bi bi-person"></i> {{ reply.user_name }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">{{ reply.content }}</p>
+                                </div>
+                            </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% for reply in replies %}
+                    {% if reply.best_reply == 0 %}
+                        <div class="card mb-3 border-secondary">
+                            <div class="card-header bg-secondary bg-opacity-10 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-reply fs-5"></i>
+                                    <span class="fw-bold">Reply #{{ loop.index }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 small text-muted">
+                                    <i class="bi bi-calendar-event"></i> {{ reply.date }}
+                                    {% if reply.user_name %}
+                                    <span class="mx-1">•</span>
+                                    <i class="bi bi-person"></i> {{ reply.user_name }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">{{ reply.content }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle me-2" style="font-size: 1.5rem;"></i> No replies yet. Be the first to reply!
+                </div>
+            {% endif %}
+        </div>
+
+        <style>
+            .card.border-primary {
+                border-left: 4px solid #0d6efd;
+            }
+            
+            .card.border-secondary {
+                border-left: 4px solid #6c757d;
+            }
+            
+            .replies-container {
+                margin-left: 1rem;
+                border-left: 2px dashed #dee2e6;
+                padding-left: 1rem;
+            }
+        </style>
+{% endblock %}

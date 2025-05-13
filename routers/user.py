@@ -6,7 +6,7 @@ import httpx
 
 router = APIRouter(tags=["user"])
 
-@router.get("/users/{user_id}", response_class=HTMLResponse)
+@router.get("/{user_id}", response_class=HTMLResponse)
 async def get_user(request: Request, user_id: int):
     api_url = f"http://172.245.56.116:8000/users/{user_id}"
 

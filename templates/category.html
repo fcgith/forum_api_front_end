@@ -42,7 +42,7 @@
                                     <i class="bi bi-calendar-event"></i> {{ topic.date }}
                                     {% if topic.user_name %}
                                     <span class="mx-1">•</span>
-                                    <i class="bi bi-person"></i> <a href="/user/{{ topic.user_id }}" class="text-decoration-none">{{ topic.user_name }}</a>
+                                    <i class="bi bi-person"></i> {{ topic.user_name }}
                                     {% endif %}
                                 </div>
                             </div>

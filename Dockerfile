@@ -5,7 +5,7 @@ FROM python:3.12.5-slim
 WORKDIR /app
 
 # Install system dependencies for MariaDB Connector/C, git, and procps (for pkill)
-RUN apt-get update && apt-get install -y sudo
+RUN apt-get update
 RUN apt-get install -y \
     libmariadb-dev \
     gcc \
@@ -34,7 +34,7 @@ COPY . .
 COPY update_and_run.sh .
 
 # Ensure the script has executable permissions
-RUN sudo chmod +x update_and_run.sh
+RUN chmod +x update_and_run.sh
 
 # Command to run the update script
 CMD ["./update_and_run.sh"]

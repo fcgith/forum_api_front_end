@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <a href="/" class="text-secondary text-decoration-none">
+                    <i class="bi bi-house-door"></i>
+                </a>
+                <i class="bi bi-chevron-right text-muted small"></i>
+                <span class="text-primary">User Profile</span>
+            </div>
+            <h1 class="display-5 fw-bold">{{ profile.username }}'s Profile</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    {% if profile.avatar %}
+                    <img src="{{ profile.avatar }}" alt="{{ profile.username }}" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 150px; height: 150px;">
+                        <i class="bi bi-person-fill text-primary" style="font-size: 4rem;"></i>
+                    </div>
+                    {% endif %}
+                    <h3 class="card-title">{{ profile.username }}</h3>
+                    {% if profile.admin > 0 %}
+                    <span class="badge bg-danger mb-3">Administrator</span>
+                    {% endif %}
+                    <p class="text-muted">Member since {{ profile.creation_date }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0"><i class="bi bi-info-circle me-2"></i>Profile Details</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row" style="width: 30%;">Username</th>
+                                <td>{{ profile.username }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">User ID</th>
+                                <td>{{ profile.id }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Joined</th>
+                                <td>{{ profile.creation_date }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Account Type</th>
+                                <td>{% if profile.admin > 0 %}Administrator{% else %}Regular User{% endif %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0"><i class="bi bi-gear me-2"></i>Actions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/" class="btn btn-outline-primary">
+                            <i class="bi bi-house-door me-2"></i>Return to Home
+                        </a>
+                        <a href="#" class="btn btn-outline-success">
+                            <i class="bi bi-chat-dots me-2"></i>Message
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

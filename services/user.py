@@ -82,6 +82,11 @@ class UserService:
         # Get the token from the cookie if the user is logged in
         token = Cookies.get_access_token_from_cookie(request)
 
+        # Check if the user is logged in and viewing their own profile
+        if user_data.get("is_authenticated") and "id" in user_data and user_data.get("id") == user_id:
+            # Redirect to /user/me if the user is viewing their own profile
+            return RedirectResponse(url="/user/me", status_code=303)
+
         # Make the API call to get the user profile data
         async with httpx.AsyncClient() as client:
             headers = {"Cache-Control": "no-cache"}
@@ -103,6 +108,9 @@ class UserService:
 
             profile_data = response.json()
 
+            # Check if this is the user's own profile
+            is_own_profile = user_data.get("is_authenticated") and "id" in user_data and user_data.get("id") == profile_data.get("id")
+
             # Prepare the data for the template
             template_data = {
                 "request": request,
@@ -110,7 +118,7 @@ class UserService:
                 "profile": profile_data,
                 "is_authenticated": user_data.get("is_authenticated", False),
                 "admin": user_data.get("admin", False),
-                "is_own_profile": False
+                "is_own_profile": is_own_profile
             }
 
             # Render the user profile template

@@ -16,3 +16,7 @@ async def get_reply_form(request: Request, topic_id: int):
 @router.post("/{topic_id}/reply", response_class=HTMLResponse)
 async def post_reply(request: Request, topic_id: int):
     return await TopicService.post_reply(request, topic_id)
+
+@router.post("/{topic_id}/best-reply/{reply_id}", response_class=HTMLResponse)
+async def mark_best_reply(request: Request, topic_id: int, reply_id: int):
+    return await TopicService.mark_best_reply(request, reply_id, topic_id)

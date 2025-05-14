@@ -70,6 +70,13 @@ class TopicService:
             data["replies"] = response_replies.json()
             data["permission_type"] = permission_type
             data["can_reply"] = PermissionService.can_reply_to_topic(permission_type, category_hidden)
+
+            # Check if the current user is the topic creator
+            # The user_id from the API response is the ID of the current user
+            current_user_id = data.get("id")
+            topic_creator_id = topic_data.get("user_id")
+            data["is_topic_creator"] = current_user_id == topic_creator_id
+
             return templates.TemplateResponse("topic.html", data)
 
     @classmethod
@@ -194,6 +201,67 @@ class TopicService:
             if response.status_code != 200:
                 data = {"request": request, "message": "Failed to post reply", "topic": topic_data}
                 return templates.TemplateResponse("reply.html", data)
+
+            # Redirect back to the topic page
+            return RedirectResponse(url=f"/topics/{topic_id}", status_code=303)
+
+    @classmethod
+    async def mark_best_reply(cls, request: Request, reply_id: int, topic_id: int):
+        """
+        Mark a reply as the best reply for a topic.
+
+        Args:
+            request: The FastAPI request object
+            reply_id: The ID of the reply to mark as best
+            topic_id: The ID of the topic the reply belongs to
+
+        Returns:
+            RedirectResponse: Redirects back to the topic page
+        """
+        # Get authentication status
+        token = Cookies.get_access_token_from_cookie(request)
+        if not token:
+            return RedirectResponse(url="/auth/login")
+
+        # Get topic details to check if the user is the topic creator
+        async with httpx.AsyncClient() as client:
+            headers = {"Cache-Control": "no-cache"}
+            if token:
+                headers["Authorization"] = f"Bearer {token}"
+
+            # Get topic details
+            response_topic = await client.get(
+                f"http://172.245.56.116:8000/topics/{topic_id}?token={token}", headers=headers)
+
+            if response_topic.status_code == 404:
+                return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
+
+            if response_topic.status_code != 200:
+                return templates.TemplateResponse("403.html", {"request": request}, status_code=403)
+
+            topic_data = response_topic.json()
+
+            # Get user data to check if the user is the topic creator
+            user_data = await AuthService.get_user_data_from_cookie(request)
+            current_user_id = user_data.get("id")
+            topic_creator_id = topic_data.get("user_id")
+
+            # Check if the user is the topic creator
+            if current_user_id != topic_creator_id:
+                return templates.TemplateResponse("403.html", {"request": request}, status_code=403)
+
+            # Send PUT request to mark the reply as best
+            response = await client.put(
+                f"http://172.245.56.116:8000/replies/best?reply_id={reply_id}&topic_id={topic_id}&token={token}",
+                headers=headers
+            )
+
+            # Check the status code from the PUT request
+            if response.status_code == 403:
+                return templates.TemplateResponse("403.html", {"request": request}, status_code=403)
+
+            if response.status_code != 200:
+                return templates.TemplateResponse("500.html", {"request": request}, status_code=500)
 
             # Redirect back to the topic page
             return RedirectResponse(url=f"/topics/{topic_id}", status_code=303)

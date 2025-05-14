@@ -80,6 +80,15 @@
                                 </div>
                                 <div class="card-body">
                                     <p class="card-text">{{ reply.content }}</p>
+                                    {% if is_topic_creator and reply.best_reply == 0 %}
+                                    <div class="text-end mt-2">
+                                        <form action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                                <i class="bi bi-check-circle me-1"></i> Mark as Best Reply
+                                            </button>
+                                        </form>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endif %}
@@ -102,6 +111,15 @@
                             </div>
                             <div class="card-body">
                                 <p class="card-text">{{ reply.content }}</p>
+                                {% if is_topic_creator %}
+                                <div class="text-end mt-2">
+                                    <form action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-check-circle me-1"></i> Mark as Best Reply
+                                        </button>
+                                    </form>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     {% endif %}

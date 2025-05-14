@@ -40,7 +40,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav mx-auto">
                     {% if is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="/">Home</a>
@@ -75,6 +75,14 @@
                         </li>
                     {% endif %}
                 </ul>
+                {% if is_authenticated %}
+                <form class="d-flex" action="/search/1" method="get">
+                    <input class="form-control form-control-sm rounded-pill me-2" type="search" name="search" placeholder="Search..." aria-label="Search" style="max-width: 150px; height: 30px;">
+                    <button class="btn btn-sm btn-outline-light rounded-pill" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                {% endif %}
             </div>
         </div>
     </nav>

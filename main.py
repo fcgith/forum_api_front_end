@@ -6,6 +6,7 @@ from routers.auth import router as auth_router
 from routers.user import router as user_router
 from routers.category import router as categories_router
 from routers.topic import router as topics_router
+from routers.search import router as search_router
 
 from services.jinja import templates
 
@@ -16,6 +17,7 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(user_router, prefix="/user")
 app.include_router(categories_router, prefix="/categories")
 app.include_router(topics_router, prefix="/topics")
+app.include_router(search_router, prefix="/search")
 
 @app.exception_handler(404)
 async def custom_404_handler(request: Request, exc: HTTPException):

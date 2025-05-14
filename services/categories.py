@@ -98,7 +98,7 @@ class CategoryService:
         try:
             async with httpx.AsyncClient() as client:
                 topic_data = {
-                    "title": name,
+                    "name": name,
                     "content": content,
                     "category_id": category_id
                 }

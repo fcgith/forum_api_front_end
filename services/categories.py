@@ -3,8 +3,9 @@ from fastapi.responses import RedirectResponse
 
 from services.auth import AuthService
 from services.cookies import Cookies
-from services.errors import not_authorized
+from services.errors import not_authorized, not_found
 from services.jinja import templates
+from services.permissions import PermissionService
 
 
 class CategoryService:
@@ -19,51 +20,91 @@ class CategoryService:
         if not data["is_authenticated"]:
             raise not_authorized
 
+        # Check the user's permission for this category
+        permission_type = await PermissionService.check_category_permission(request, category)
+
+        # Check if the user can add a topic
+        if not PermissionService.can_add_topic(permission_type):
+            raise not_authorized
+
         async with httpx.AsyncClient() as client:
             headers = {"Cache-Control": "no-cache"}
             response_category = await client.get(f"http://172.245.56.116:8000/categories/{category}?token={token}", headers=headers)
-            if response_category.status_code == 200:
-                data["category"] = response_category.json()
-                data["admin"] = True if data.get("admin") > 0 else False
-                data["title"] = "Add Topic - Forum API Frontend"
-                data["request"] = request
 
-                return templates.TemplateResponse(
-                    "addtopic.html",
-                    data,
-                    headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
-                )
-            else:
+            if response_category.status_code == 404:
+                raise not_found
+
+            if response_category.status_code != 200:
                 raise not_authorized
+
+            category_data = response_category.json()
+            category_hidden = category_data.get("hidden", False)
+
+            # Check if the user can view this category
+            if not PermissionService.can_view_category(permission_type, category_hidden):
+                raise not_authorized
+
+            data["category"] = category_data
+            data["admin"] = True if data.get("admin") > 0 else False
+            data["title"] = "Add Topic - Forum API Frontend"
+            data["request"] = request
+            data["permission_type"] = permission_type
+
+            return templates.TemplateResponse(
+                "addtopic.html",
+                data,
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )
 
     @classmethod
     async def get_category_by_id(cls, request, category):
         token = Cookies.get_access_token_from_cookie(request)
         data = await AuthService.get_user_data_from_cookie(request)
 
-        if data["is_authenticated"]:
-            async with httpx.AsyncClient() as client:
-                headers = {"Cache-Control": "no-cache"}
-                response_category = await client.get(f"http://172.245.56.116:8000/categories/{category}?token={token}",
-                                                     headers=headers)
-                response_topics = await client.get(
-                    f"http://172.245.56.116:8000/categories/{category}/topics?token={token}", headers=headers)
-                if response_category.status_code == 200 and response_topics.status_code == 200:
-                    data["topics"] = response_topics.json()
-                    data["category"] = response_category.json()
-                    data["admin"] = True if data.get("admin") > 0 else False
-                    data["title"] = "Category - Forum API Frontend"
-                    data["request"] = request
-                    return templates.TemplateResponse(
-                        "category.html",
-                        data,
-                        headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
-                    )
-                else:
-                    if response_category.status_code == 403 or response_topics.status_code == 403:
-                        raise not_authorized
+        if not data["is_authenticated"]:
+            raise not_authorized
 
-        raise not_authorized
+        # Check the user's permission for this category
+        permission_type = await PermissionService.check_category_permission(request, category)
+
+        async with httpx.AsyncClient() as client:
+            headers = {"Cache-Control": "no-cache"}
+            response_category = await client.get(f"http://172.245.56.116:8000/categories/{category}?token={token}",
+                                                 headers=headers)
+
+            if response_category.status_code == 404:
+                raise not_found
+
+            if response_category.status_code != 200:
+                raise not_authorized
+
+            category_data = response_category.json()
+            category_hidden = category_data.get("hidden", False)
+
+            # Check if the user can view this category
+            if not PermissionService.can_view_category(permission_type, category_hidden):
+                raise not_authorized
+
+            # If the user can view the category, get the topics
+            response_topics = await client.get(
+                f"http://172.245.56.116:8000/categories/{category}/topics?token={token}", headers=headers)
+
+            if response_topics.status_code != 200:
+                raise not_authorized
+
+            data["topics"] = response_topics.json()
+            data["category"] = category_data
+            data["admin"] = True if data.get("admin") > 0 else False
+            data["title"] = "Category - Forum API Frontend"
+            data["request"] = request
+            data["permission_type"] = permission_type
+            data["can_add_topic"] = PermissionService.can_add_topic(permission_type)
+
+            return templates.TemplateResponse(
+                "category.html",
+                data,
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )
 
     @classmethod
     async def topic_form_post(cls, request, category_id: int):
@@ -71,6 +112,13 @@ class CategoryService:
         data = await AuthService.get_user_data_from_cookie(request)
 
         if not data["is_authenticated"]:
+            raise not_authorized
+
+        # Check the user's permission for this category
+        permission_type = await PermissionService.check_category_permission(request, category_id)
+
+        # Check if the user can add a topic
+        if not PermissionService.can_add_topic(permission_type):
             raise not_authorized
 
         form_data = await request.form()
@@ -83,12 +131,26 @@ class CategoryService:
             async with httpx.AsyncClient() as client:
                 headers = {"Cache-Control": "no-cache"}
                 response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
-                if response_category.status_code == 200:
-                    data["category"] = response_category.json()
+
+                if response_category.status_code == 404:
+                    raise not_found
+
+                if response_category.status_code != 200:
+                    raise not_authorized
+
+                category_data = response_category.json()
+                category_hidden = category_data.get("hidden", False)
+
+                # Check if the user can view this category
+                if not PermissionService.can_view_category(permission_type, category_hidden):
+                    raise not_authorized
+
+                data["category"] = category_data
 
             data["message"] = "Topic title and content are required."
             data["request"] = request
             data["title"] = "Add Topic - Forum API Frontend"
+            data["permission_type"] = permission_type
             return templates.TemplateResponse(
                 "addtopic.html",
                 data,
@@ -96,6 +158,11 @@ class CategoryService:
             )
 
         try:
+            # Double-check permissions before posting
+            permission_type = await PermissionService.check_category_permission(request, category_id)
+            if not PermissionService.can_add_topic(permission_type):
+                raise not_authorized
+
             async with httpx.AsyncClient() as client:
                 topic_data = {
                     "name": name,
@@ -127,9 +194,22 @@ class CategoryService:
                 # Return to the form with the error message
                 # Get the category details to maintain consistency with get_topic_form
                 response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers={"Cache-Control": "no-cache"})
-                if response_category.status_code == 200:
-                    data["category"] = response_category.json()
 
+                if response_category.status_code == 404:
+                    raise not_found
+
+                if response_category.status_code != 200:
+                    raise not_authorized
+
+                category_data = response_category.json()
+                category_hidden = category_data.get("hidden", False)
+
+                # Check if the user can view this category
+                if not PermissionService.can_view_category(permission_type, category_hidden):
+                    raise not_authorized
+
+                data["category"] = category_data
+                data["permission_type"] = permission_type
                 data["message"] = error_message
                 data["request"] = request
                 data["title"] = "Add Topic - Forum API Frontend"
@@ -143,13 +223,30 @@ class CategoryService:
             # Handle connection errors
             # Get the category details to maintain consistency with get_topic_form
             try:
+                # Double-check permissions
+                permission_type = await PermissionService.check_category_permission(request, category_id)
+
                 async with httpx.AsyncClient() as client:
                     headers = {"Cache-Control": "no-cache"}
                     response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
-                    if response_category.status_code == 200:
-                        data["category"] = response_category.json()
-            except:
-                # If we can't get the category, we'll just continue without it
+
+                    if response_category.status_code == 404:
+                        raise not_found
+
+                    if response_category.status_code != 200:
+                        raise not_authorized
+
+                    category_data = response_category.json()
+                    category_hidden = category_data.get("hidden", False)
+
+                    # Check if the user can view this category
+                    if not PermissionService.can_view_category(permission_type, category_hidden):
+                        raise not_authorized
+
+                    data["category"] = category_data
+                    data["permission_type"] = permission_type
+            except (httpx.RequestError, not_authorized, not_found):
+                # If we can't get the category or don't have permission, we'll just continue without it
                 pass
 
             data["message"] = f"Error connecting to API: {str(e)}"

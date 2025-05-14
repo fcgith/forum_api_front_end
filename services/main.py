@@ -4,6 +4,7 @@ from services.auth import AuthService
 from services.cookies import Cookies
 from services.errors import internal_error
 from services.jinja import templates
+from services.permissions import PermissionService
 
 
 class MainService:
@@ -19,7 +20,23 @@ class MainService:
             response = await client.get(f"{api_url}{token}", headers=headers)
             data = {"is_authenticated": True, "admin": True if user_data["admin"] > 0 else False}
             if response.status_code == 200:
-                data["categories"] = response.json()
+                all_categories = response.json()
+
+                # Filter categories based on permissions
+                visible_categories = []
+                for category in all_categories:
+                    # Check permission for this category
+                    permission_type = await PermissionService.check_category_permission(request, category["id"])
+                    category_hidden = category.get("hidden", False)
+
+                    # Check if user can view this category
+                    if PermissionService.can_view_category(permission_type, category_hidden):
+                        # Add permission info to the category
+                        category["permission_type"] = permission_type
+                        category["can_add_topic"] = PermissionService.can_add_topic(permission_type)
+                        visible_categories.append(category)
+
+                data["categories"] = visible_categories
                 data["title"] = "Home/Categories - Forum API Frontend"
                 data["request"] = request
                 return templates.TemplateResponse(

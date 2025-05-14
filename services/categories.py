@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 
 from services.auth import AuthService
 from services.cookies import Cookies
-from services.errors import not_authorized
+from services.errors import not_authorized, not_found
 from services.jinja import templates
 
 
@@ -22,6 +22,16 @@ class CategoryService:
         async with httpx.AsyncClient() as client:
             headers = {"Cache-Control": "no-cache"}
             response_category = await client.get(f"http://172.245.56.116:8000/categories/{category}?token={token}", headers=headers)
+
+            # Check if the category exists
+            if response_category.status_code == 404:
+                raise not_found
+
+            # Check if the user has access to the category
+            if response_category.status_code == 403:
+                raise not_authorized
+
+            # If the response is successful, proceed with rendering the form
             if response_category.status_code == 200:
                 data["category"] = response_category.json()
                 data["admin"] = True if data.get("admin") > 0 else False
@@ -34,6 +44,7 @@ class CategoryService:
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                 )
             else:
+                # For any other error, raise not_authorized as a fallback
                 raise not_authorized
 
     @classmethod
@@ -73,19 +84,32 @@ class CategoryService:
         if not data["is_authenticated"]:
             raise not_authorized
 
+        # Check if the category exists and if the user has access to it
+        async with httpx.AsyncClient() as client:
+            headers = {"Cache-Control": "no-cache"}
+            response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
+
+            # Check if the category exists
+            if response_category.status_code == 404:
+                raise not_found
+
+            # Check if the user has access to the category
+            if response_category.status_code == 403:
+                raise not_authorized
+
+            # If the response is successful, proceed with form processing
+            if response_category.status_code == 200:
+                data["category"] = response_category.json()
+            else:
+                # For any other error, raise not_authorized as a fallback
+                raise not_authorized
+
         form_data = await request.form()
         name = form_data.get("name")
         content = form_data.get("content")
 
         if not name or not content:
             # Return to the form with an error message if required fields are missing
-            # Get the category details to maintain consistency with get_topic_form
-            async with httpx.AsyncClient() as client:
-                headers = {"Cache-Control": "no-cache"}
-                response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
-                if response_category.status_code == 200:
-                    data["category"] = response_category.json()
-
             data["message"] = "Topic title and content are required."
             data["request"] = request
             data["title"] = "Add Topic - Forum API Frontend"

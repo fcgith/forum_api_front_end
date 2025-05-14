@@ -6,8 +6,8 @@ from services.topic import TopicService
 router = APIRouter()
 
 @router.get("/{topic_id}", response_class=HTMLResponse)
-async def get_topic(request: Request, topic_id: int):
-    return await TopicService.get_topic(request, topic_id)
+async def get_topic(request: Request, topic_id: int, success: str = None):
+    return await TopicService.get_topic(request, topic_id, success)
 
 @router.get("/{topic_id}/reply", response_class=HTMLResponse)
 async def get_reply_form(request: Request, topic_id: int):

@@ -110,8 +110,12 @@ class CategoryService:
                 )
 
                 if response.status_code == 200 or response.status_code == 201:
-                    # Redirect to the category page on success
-                    return RedirectResponse(url=f"/categories/{category_id}", status_code=303)
+                    # Parse the API response to get the topic_id
+                    response_data = response.json()
+                    topic_id = response_data.get("topic_id")
+
+                    # Redirect to the topic page with success message
+                    return RedirectResponse(url=f"/topics/{topic_id}?success=true", status_code=303)
 
                 # Handle error response
                 try:

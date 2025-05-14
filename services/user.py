@@ -1,0 +1,119 @@
+import httpx
+from fastapi import Request
+from fastapi.responses import HTMLResponse, RedirectResponse
+
+from services.auth import AuthService
+from services.cookies import Cookies
+from services.errors import not_authorized, internal_error, not_found
+from services.jinja import templates
+
+class UserService:
+    @classmethod
+    async def get_user_profile(cls, request: Request):
+        """
+        Get the profile data for the currently logged-in user.
+
+        Args:
+            request: The FastAPI request object
+
+        Returns:
+            HTMLResponse: The rendered profile page
+        """
+        # Verify the user is logged in
+        user_data = await AuthService.verify_logged_in(request)
+
+        # Get the username from the user data
+        username = user_data.get("username")
+        if not username:
+            raise not_authorized
+
+        # Get the token from the cookie
+        token = Cookies.get_access_token_from_cookie(request)
+        if not token:
+            raise not_authorized
+
+        # Make the API call to get the user profile data
+        async with httpx.AsyncClient() as client:
+            headers = {"Cache-Control": "no-cache"}
+            response = await client.get(
+                f"http://172.245.56.116:8000/users/get-by-username/{username}?token={token}",
+                headers=headers
+            )
+
+            if response.status_code == 404:
+                raise not_found
+
+            if response.status_code != 200:
+                raise not_authorized
+
+            profile_data = response.json()
+
+            # Prepare the data for the template
+            template_data = {
+                "request": request,
+                "title": f"Profile - {username}",
+                "profile": profile_data,
+                "is_authenticated": True,
+                "admin": user_data.get("admin", False)
+            }
+
+            # Render the profile template
+            return templates.TemplateResponse(
+                "profile.html",
+                template_data,
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )
+
+    @classmethod
+    async def get_user_by_id(cls, request: Request, user_id: int):
+        """
+        Get the profile data for a specific user by ID.
+
+        Args:
+            request: The FastAPI request object
+            user_id: The ID of the user to get
+
+        Returns:
+            HTMLResponse: The rendered user profile page
+        """
+        # Get authentication status for the current user
+        user_data = await AuthService.get_user_data_from_cookie(request)
+
+        # Get the token from the cookie if the user is logged in
+        token = Cookies.get_access_token_from_cookie(request)
+
+        # Make the API call to get the user profile data
+        async with httpx.AsyncClient() as client:
+            headers = {"Cache-Control": "no-cache"}
+
+            # Add token to the request if available
+            api_url = f"http://172.245.56.116:8000/users/{user_id}"
+            if token:
+                api_url += f"?token={token}"
+
+            response = await client.get(api_url, headers=headers)
+
+            if response.status_code == 404:
+                raise not_found
+
+            if response.status_code != 200:
+                raise not_authorized
+
+            profile_data = response.json()
+
+            # Prepare the data for the template
+            template_data = {
+                "request": request,
+                "title": f"User Profile - {profile_data.get('username', 'Unknown')}",
+                "profile": profile_data,
+                "is_authenticated": user_data.get("is_authenticated", False),
+                "admin": user_data.get("admin", False),
+                "is_own_profile": False
+            }
+
+            # Render the user profile template
+            return templates.TemplateResponse(
+                "user_profile.html",
+                template_data,
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )

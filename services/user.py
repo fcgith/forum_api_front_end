@@ -90,6 +90,8 @@ class UserService:
             api_url = f"http://172.245.56.116:8000/users/{user_id}"
             if token:
                 api_url += f"?token={token}"
+            else:
+                raise not_authorized
 
             response = await client.get(api_url, headers=headers)
 

@@ -42,7 +42,7 @@
                                     <i class="bi bi-calendar-event"></i> {{ topic.date.strftime('%B %d, %Y') }}
                                     {% if topic.user_name %}
                                     <span class="mx-1">•</span>
-                                    <i class="bi bi-person"></i> {{ topic.user_name }}
+                                    <i class="bi bi-person"></i> <a href="/user/{{ topic.user_name }}">{{ topic.user_name }}</a>
                                     {% endif %}
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                 padding: 1rem;
                 border-left: 4px solid #0d6efd;
             }
-            
+
             .text-truncate-multiline {
                 display: -webkit-box;
                 -webkit-line-clamp: 2;

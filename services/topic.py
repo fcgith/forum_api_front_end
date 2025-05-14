@@ -69,7 +69,7 @@ class TopicService:
             data["topic"] = topic_data
             data["replies"] = response_replies.json()
             data["permission_type"] = permission_type
-            data["can_reply"] = PermissionService.can_reply_to_topic(permission_type)
+            data["can_reply"] = PermissionService.can_reply_to_topic(permission_type, category_hidden)
             return templates.TemplateResponse("topic.html", data)
 
     @classmethod
@@ -105,10 +105,6 @@ class TopicService:
             # Check the user's permission for this category
             permission_type = await PermissionService.check_category_permission(request, category_id)
 
-            # Check if the user can reply to topics in this category
-            if not PermissionService.can_reply_to_topic(permission_type):
-                return templates.TemplateResponse("403.html", data, status_code=403)
-
             # Get category details to check if it's hidden
             response_category = await client.get(
                 f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
@@ -121,6 +117,10 @@ class TopicService:
 
             category_data = response_category.json()
             category_hidden = category_data.get("hidden", False)
+
+            # Check if the user can reply to topics in this category
+            if not PermissionService.can_reply_to_topic(permission_type, category_hidden):
+                return templates.TemplateResponse("403.html", data, status_code=403)
 
             # Check if the user can view this category and its topics
             if not PermissionService.can_view_topics(permission_type, category_hidden):
@@ -159,10 +159,6 @@ class TopicService:
             # Check the user's permission for this category
             permission_type = await PermissionService.check_category_permission(request, category_id)
 
-            # Check if the user can reply to topics in this category
-            if not PermissionService.can_reply_to_topic(permission_type):
-                return templates.TemplateResponse("403.html", {"request": request}, status_code=403)
-
             # Get category details to check if it's hidden
             response_category = await client.get(
                 f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
@@ -176,6 +172,10 @@ class TopicService:
             category_data = response_category.json()
             category_hidden = category_data.get("hidden", False)
 
+            # Check if the user can reply to topics in this category
+            if not PermissionService.can_reply_to_topic(permission_type, category_hidden):
+                return templates.TemplateResponse("403.html", {"request": request}, status_code=403)
+
             # Check if the user can view this category and its topics
             if not PermissionService.can_view_topics(permission_type, category_hidden):
                 return templates.TemplateResponse("403.html", {"request": request}, status_code=403)
@@ -183,12 +183,17 @@ class TopicService:
             form_data = await request.form()
             content = form_data.get("content", "")
 
-            # Post the reply
+            # Post the reply using the correct API endpoint
             response = await client.post(
-                f"http://172.245.56.116:8000/topics/{topic_id}/replies",
+                f"http://172.245.56.116:8000/replies/add/{topic_id}?token={token}",
                 json={"content": content},
                 headers=headers
             )
+
+            # Check if the reply was successfully posted
+            if response.status_code != 200:
+                data = {"request": request, "message": "Failed to post reply", "topic": topic_data}
+                return templates.TemplateResponse("reply.html", data)
 
             # Redirect back to the topic page
             return RedirectResponse(url=f"/topics/{topic_id}", status_code=303)

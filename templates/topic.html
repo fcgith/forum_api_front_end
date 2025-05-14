@@ -34,7 +34,7 @@
                         <i class="bi bi-calendar-event"></i> {{ topic.date }}
                         {% if topic.user_name %}
                         <span class="mx-1">•</span>
-                        <i class="bi bi-person"></i> {{ topic.user_name }}
+                        <i class="bi bi-person"></i> <a href="/user/{{ topic.user_id }}" class="text-decoration-none">{{ topic.user_name }}</a>
                         {% endif %}
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                                         <i class="bi bi-calendar-event"></i> {{ reply.date }}
                                         {% if reply.user_name %}
                                         <span class="mx-1">•</span>
-                                        <i class="bi bi-person"></i> {{ reply.user_name }}
+                                        <i class="bi bi-person"></i> <a href="/user/{{ reply.user_id }}" class="text-decoration-none">{{ reply.user_name }}</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -96,7 +96,7 @@
                                     <i class="bi bi-calendar-event"></i> {{ reply.date }}
                                     {% if reply.user_name %}
                                     <span class="mx-1">•</span>
-                                    <i class="bi bi-person"></i> {{ reply.user_name }}
+                                    <i class="bi bi-person"></i> <a href="/user/{{ reply.user_id }}" class="text-decoration-none">{{ reply.user_name }}</a>
                                     {% endif %}
                                 </div>
                             </div>

@@ -33,7 +33,7 @@ class MainService:
                     if PermissionService.can_view_category(permission_type, category_hidden):
                         # Add permission info to the category
                         category["permission_type"] = permission_type
-                        category["can_add_topic"] = PermissionService.can_add_topic(permission_type)
+                        category["can_add_topic"] = PermissionService.can_add_topic(permission_type, category_hidden)
                         visible_categories.append(category)
 
                 data["categories"] = visible_categories

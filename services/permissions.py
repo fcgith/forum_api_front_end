@@ -80,29 +80,45 @@ class PermissionService:
         return cls.can_view_category(permission_type, category_hidden)
 
     @classmethod
-    def can_add_topic(cls, permission_type):
+    def can_add_topic(cls, permission_type, category_hidden=False):
         """
         Check if the user can add a topic to the category based on their permission type.
 
         Args:
             permission_type: The user's permission type
+            category_hidden: Whether the category is hidden
 
         Returns:
             bool: True if the user can add a topic, False otherwise
         """
         # Use case-insensitive comparison for consistency
-        return permission_type.lower() == cls.WRITE_ACCESS.lower()
+        if permission_type.lower() == cls.WRITE_ACCESS.lower():
+            return True
+
+        # Normal access users can only add topics to non-hidden categories
+        if permission_type.lower() == cls.NORMAL_ACCESS.lower():
+            return not category_hidden
+
+        return False
 
     @classmethod
-    def can_reply_to_topic(cls, permission_type):
+    def can_reply_to_topic(cls, permission_type, category_hidden=False):
         """
         Check if the user can reply to a topic based on their permission type.
 
         Args:
             permission_type: The user's permission type
+            category_hidden: Whether the category is hidden
 
         Returns:
             bool: True if the user can reply to a topic, False otherwise
         """
         # Use case-insensitive comparison for consistency
-        return permission_type.lower() == cls.WRITE_ACCESS.lower()
+        if permission_type.lower() == cls.WRITE_ACCESS.lower():
+            return True
+
+        # Normal access users can only reply to topics in non-hidden categories
+        if permission_type.lower() == cls.NORMAL_ACCESS.lower():
+            return not category_hidden
+
+        return False

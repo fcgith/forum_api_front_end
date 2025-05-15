@@ -25,3 +25,21 @@ async def add_category(request: Request, name: str = Form(...), description: str
     Add a new category.
     """
     return await AdminService.add_category(request, name, description)
+
+@router.get("/category-hidden-status", response_class=HTMLResponse)
+async def category_hidden_status_form(request: Request):
+    """
+    Form for updating a category's hidden status.
+    """
+    return await AdminService.get_category_hidden_status_form(request)
+
+@router.post("/category-hidden-status", response_class=HTMLResponse)
+async def update_category_hidden_status(
+    request: Request, 
+    category_id: int = Form(...), 
+    hidden: bool = Form(False)
+):
+    """
+    Update a category's hidden status.
+    """
+    return await AdminService.update_category_hidden_status(request, category_id, hidden)

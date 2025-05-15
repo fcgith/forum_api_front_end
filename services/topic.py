@@ -285,7 +285,7 @@ class TopicService:
 
             # Send PUT request to mark the reply as best
             response = await client.put(
-                f"http://172.245.56.116:8000/replies/best?reply_id={reply_id}&topic_id={topic_id}&token={token}",
+                f"http://172.245.56.116:8000/replies/best/{topic_id}/{reply_id}?token={token}",
                 headers=headers
             )
 
@@ -329,7 +329,7 @@ class TopicService:
 
             # Send PUT request to vote on the reply
             response = await client.put(
-                f"http://172.245.56.116:8000/replies/vote?reply_id={reply_id}&vote={vote_type}&token={token}",
+                f"http://172.245.56.116:8000/replies/vote/{reply_id}/{vote_type}?token={token}",
                 headers=headers
             )
 

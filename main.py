@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException
 import uvicorn
 
-from routers.main import router as main_router
+from routers.main_service import router as main_router
 from routers.auth import router as auth_router
 from routers.user import router as user_router
 from routers.category import router as categories_router

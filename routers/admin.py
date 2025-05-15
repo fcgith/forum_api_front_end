@@ -43,3 +43,21 @@ async def update_category_hidden_status(
     Update a category's hidden status.
     """
     return await AdminService.update_category_hidden_status(request, category_id, hidden)
+
+@router.get("/lock-category", response_class=HTMLResponse)
+async def category_lock_form(request: Request):
+    """
+    Form for updating a category's lock status.
+    """
+    return await AdminService.get_category_lock_form(request)
+
+@router.post("/lock-category", response_class=HTMLResponse)
+async def update_category_lock(
+    request: Request,
+    category_id: int = Form(...),
+
+):
+    """
+    Lock category.
+    """
+    return await AdminService.update_category_lock(request, category_id)

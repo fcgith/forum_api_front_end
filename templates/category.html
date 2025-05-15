@@ -24,9 +24,13 @@
                     <i class="bi bi-chat-square-text me-1"></i> {{ topics|length }} Topics
                 </span>
             </div>
-            {% if is_authenticated and can_add_topic %}
+            {% if is_authenticated and can_add_topic and category.locked == 0 %}
             <a href="/categories/{{ category.id }}/new-topic" class="btn btn-primary">
                 <i class="bi bi-plus-circle me-1"></i> New Topic
+            </a>
+            {% else %}
+            <a href="#" class="btn btn-primary disabled" tabindex="-1" aria-disabled="true">
+                <i class="bi bi-lock me-1"></i> Locked
             </a>
             {% endif %}
         </div>

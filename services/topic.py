@@ -95,6 +95,7 @@ class TopicService:
 
             data["user_votes"] = user_votes
 
+
             return templates.TemplateResponse("topic.html", data)
 
     @classmethod
@@ -186,6 +187,7 @@ class TopicService:
             topic_data = response_topic.json()
             category_id = topic_data.get("category_id")
 
+
             # Check the user's permission for this category
             permission_type = await PermissionService.check_category_permission(request, category_id)
 
@@ -222,6 +224,10 @@ class TopicService:
                 json={"content": content_with_br},
                 headers=headers
             )
+
+            if response.status_code == 403:
+                data = {"request": request, "message": "The topic is locked.", "topic": topic_data}
+                return templates.TemplateResponse("reply.html", data)
 
             # Check if the reply was successfully posted
             if response.status_code != 200:

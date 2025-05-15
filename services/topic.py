@@ -213,10 +213,13 @@ class TopicService:
             form_data = await request.form()
             content = form_data.get("content", "")
 
+            # Convert newlines to <br /> tags
+            content_with_br = content.replace('\n', '<br />')
+
             # Post the reply using the correct API endpoint
             response = await client.post(
                 f"http://172.245.56.116:8000/replies/add/{topic_id}?token={token}",
-                json={"content": content},
+                json={"content": content_with_br},
                 headers=headers
             )
 

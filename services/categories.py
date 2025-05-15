@@ -193,9 +193,12 @@ class CategoryService:
                     raise not_authorized
 
             async with httpx.AsyncClient() as client:
+                # Convert newlines to <br /> tags
+                content_with_br = content.replace('\n', '<br />')
+
                 topic_data = {
                     "name": name,
-                    "content": content,
+                    "content": content_with_br,
                     "category_id": category_id
                 }
 

@@ -1,32 +1,96 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2 class="text-center mb-4">Create an Account</h2>
-    <form method="post" action="/auth/register">
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+<div class="container-fluid px-4 py-3">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <a href="/" class="text-secondary text-decoration-none">
+                    <i class="bi bi-house-door"></i>
+                </a>
+                <i class="bi bi-chevron-right text-muted small"></i>
+                <span class="text-primary">Register</span>
+            </div>
+            <h1 class="display-5 fw-bold">Create an Account</h1>
+            <p class="lead">Join our community and start participating in discussions.</p>
         </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+
+    <!-- Registration Tips -->
+    <div class="card mb-4 border-primary">
+        <div class="card-header bg-primary bg-opacity-10">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-info-circle fs-4"></i>
+                <span class="fw-bold">Registration Tips</span>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+        <div class="card-body">
+            <ul class="mb-0">
+                <li>Password must be at least 8 characters long</li>
+            </ul>
         </div>
-        <div class="mb-4">
-            <label for="birthdate" class="form-label">Birthdate</label>
-            <input type="date" class="form-control" id="birthdate" name="birthdate" required>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-person-plus fs-4"></i>
+                <span class="fw-bold">Account Information</span>
+            </div>
         </div>
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+        <div class="card-body">
+            <form method="post" action="/auth/register">
+                <div class="mb-3">
+                    <label for="username" class="form-label">
+                        <i class="bi bi-person me-1"></i> Username
+                    </label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Choose a unique username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">
+                        <i class="bi bi-lock me-1"></i> Password
+                    </label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Create a strong password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">
+                        <i class="bi bi-envelope me-1"></i> Email
+                    </label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Your email address" required>
+                </div>
+                <div class="mb-4">
+                    <label for="birthdate" class="form-label">
+                        <i class="bi bi-calendar me-1"></i> Birthdate
+                    </label>
+                    <input type="date" class="form-control" id="birthdate" name="birthdate" required>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="/auth/login" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Login
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i> Create Account
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
-    <div class="text-center mt-3">
+    </div>
+
+    <div class="text-center">
         Already have an account? <a href="/auth/login">Login here</a>.
     </div>
+
     {% if message %}
-        <div class="alert alert-danger text-center mt-3">{{ message | safe }}</div>
+        <div class="alert alert-danger text-center mt-3">
+            <i class="bi bi-exclamation-triangle me-2"></i> {{ message | safe }}
+        </div>
     {% endif %}
+</div>
+
+<style>
+    .card.border-primary {
+        border-left: 4px solid #0d6efd;
+    }
+</style>
 {% endblock %}

@@ -20,3 +20,9 @@ async def post_reply(request: Request, topic_id: int):
 @router.post("/{topic_id}/best-reply/{reply_id}", response_class=HTMLResponse)
 async def mark_best_reply(request: Request, topic_id: int, reply_id: int):
     return await TopicService.mark_best_reply(request, reply_id, topic_id)
+
+@router.post("/{topic_id}/vote/{reply_id}", response_class=HTMLResponse)
+async def vote_reply(request: Request, topic_id: int, reply_id: int):
+    form_data = await request.form()
+    vote_type = int(form_data.get("vote_type", "0"))
+    return await TopicService.vote_reply(request, reply_id, topic_id, vote_type)

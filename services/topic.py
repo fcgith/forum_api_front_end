@@ -77,6 +77,24 @@ class TopicService:
             topic_creator_id = topic_data.get("user_id")
             data["is_topic_creator"] = current_user_id == topic_creator_id
 
+            # Get the user's current vote for each reply
+            replies = data["replies"]
+            user_votes = {}
+
+            for reply in replies:
+                reply_id = reply.get("id")
+                if reply_id:
+                    response_vote = await client.get(
+                        f"http://172.245.56.116:8000/replies/vote/{reply_id}?token={token}", headers=headers)
+
+                    if response_vote.status_code == 200:
+                        vote_data = response_vote.json()
+                        user_votes[reply_id] = vote_data.get("vote_type", 0)
+                    else:
+                        user_votes[reply_id] = 0
+
+            data["user_votes"] = user_votes
+
             return templates.TemplateResponse("topic.html", data)
 
     @classmethod
@@ -253,6 +271,47 @@ class TopicService:
             # Send PUT request to mark the reply as best
             response = await client.put(
                 f"http://172.245.56.116:8000/replies/best?reply_id={reply_id}&topic_id={topic_id}&token={token}",
+                headers=headers
+            )
+
+            # Check the status code from the PUT request
+            if response.status_code == 403:
+                return templates.TemplateResponse("403.html", {"request": request}, status_code=403)
+
+            if response.status_code != 200:
+                return templates.TemplateResponse("500.html", {"request": request}, status_code=500)
+
+            # Redirect back to the topic page
+            return RedirectResponse(url=f"/topics/{topic_id}", status_code=303)
+
+    @classmethod
+    async def vote_reply(cls, request: Request, reply_id: int, topic_id: int, vote_type: int):
+        """
+        Vote on a reply (like, dislike, or remove vote).
+
+        Args:
+            request: The FastAPI request object
+            reply_id: The ID of the reply to vote on
+            topic_id: The ID of the topic the reply belongs to
+            vote_type: The type of vote (-1 for dislike, 0 for removing vote, 1 for like)
+
+        Returns:
+            RedirectResponse: Redirects back to the topic page
+        """
+        # Get authentication status
+        token = Cookies.get_access_token_from_cookie(request)
+        if not token:
+            return RedirectResponse(url="/auth/login")
+
+        # Send PUT request to vote on the reply
+        async with httpx.AsyncClient() as client:
+            headers = {"Cache-Control": "no-cache"}
+            if token:
+                headers["Authorization"] = f"Bearer {token}"
+
+            # Send PUT request to vote on the reply
+            response = await client.put(
+                f"http://172.245.56.116:8000/replies/vote?reply_id={reply_id}&vote={vote_type}&token={token}",
                 headers=headers
             )
 

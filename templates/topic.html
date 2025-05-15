@@ -80,15 +80,35 @@
                                 </div>
                                 <div class="card-body">
                                     <p class="card-text">{{ reply.content }}</p>
-                                    {% if is_topic_creator and reply.best_reply == 0 %}
-                                    <div class="text-end mt-2">
-                                        <form action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}" method="post" class="d-inline">
-                                            <button type="submit" class="btn btn-sm btn-outline-success">
-                                                <i class="bi bi-check-circle me-1"></i> Mark as Best Reply
-                                            </button>
-                                        </form>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div class="d-flex align-items-center">
+                                            <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline me-2">
+                                                <input type="hidden" name="vote_type" value="{% if user_votes.get(reply.id, 0) == 1 %}0{% else %}1{% endif %}">
+                                                <button type="submit" class="btn btn-sm {% if user_votes.get(reply.id, 0) == 1 %}btn-success{% else %}btn-outline-success{% endif %}">
+                                                    <i class="bi bi-hand-thumbs-up"></i>
+                                                </button>
+                                            </form>
+                                            <span class="mx-2 
+                                                {% if reply.likes > 0 %}text-success{% elif reply.likes < 0 %}text-danger{% else %}text-secondary{% endif %}">
+                                                {{ reply.likes }}
+                                            </span>
+                                            <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline">
+                                                <input type="hidden" name="vote_type" value="{% if user_votes.get(reply.id, 0) == -1 %}0{% else %}-1{% endif %}">
+                                                <button type="submit" class="btn btn-sm {% if user_votes.get(reply.id, 0) == -1 %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                                                    <i class="bi bi-hand-thumbs-down"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                        {% if is_topic_creator and reply.best_reply == 0 %}
+                                        <div>
+                                            <form action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                                    <i class="bi bi-check-circle me-1"></i> Mark as Best Reply
+                                                </button>
+                                            </form>
+                                        </div>
+                                        {% endif %}
                                     </div>
-                                    {% endif %}
                                 </div>
                             </div>
                         {% endif %}
@@ -111,15 +131,35 @@
                             </div>
                             <div class="card-body">
                                 <p class="card-text">{{ reply.content }}</p>
-                                {% if is_topic_creator %}
-                                <div class="text-end mt-2">
-                                    <form action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-outline-success">
-                                            <i class="bi bi-check-circle me-1"></i> Mark as Best Reply
-                                        </button>
-                                    </form>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div class="d-flex align-items-center">
+                                        <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline me-2">
+                                            <input type="hidden" name="vote_type" value="{% if user_votes.get(reply.id, 0) == 1 %}0{% else %}1{% endif %}">
+                                            <button type="submit" class="btn btn-sm {% if user_votes.get(reply.id, 0) == 1 %}btn-success{% else %}btn-outline-success{% endif %}">
+                                                <i class="bi bi-hand-thumbs-up"></i>
+                                            </button>
+                                        </form>
+                                        <span class="mx-2 
+                                            {% if reply.likes > 0 %}text-success{% elif reply.likes < 0 %}text-danger{% else %}text-secondary{% endif %}">
+                                            {{ reply.likes }}
+                                        </span>
+                                        <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline">
+                                            <input type="hidden" name="vote_type" value="{% if user_votes.get(reply.id, 0) == -1 %}0{% else %}-1{% endif %}">
+                                            <button type="submit" class="btn btn-sm {% if user_votes.get(reply.id, 0) == -1 %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                                                <i class="bi bi-hand-thumbs-down"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    {% if is_topic_creator %}
+                                    <div>
+                                        <form action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                                <i class="bi bi-check-circle me-1"></i> Mark as Best Reply
+                                            </button>
+                                        </form>
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
                             </div>
                         </div>
                     {% endif %}

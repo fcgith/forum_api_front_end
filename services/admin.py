@@ -52,6 +52,12 @@ class AdminService:
                 "icon": "bi-lock-plus",
                 "url": "/admin/lock-topic"
             },
+            {
+                "name": "Update User Category Privileges",
+                "description": "Set the access level of users to a category.",
+                "icon": "bi-people",
+                "url": "/admin/update-privileges"
+            },
         ]
 
         data = {

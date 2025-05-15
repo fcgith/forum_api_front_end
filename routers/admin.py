@@ -79,3 +79,22 @@ async def update_topic_lock(
     Lock topic.
     """
     return await AdminService.update_topic_lock(request, topic_id)
+
+@router.get("/update-privileges", response_class=HTMLResponse)
+async def user_update_privileges_form(request: Request):
+    """
+    Form for updating a user's permissions.
+    """
+    return await AdminService.get_update_privileges_form(request)
+
+@router.post("/update-privileges", response_class=HTMLResponse)
+async def update_user_privileges(
+    request: Request,
+    category_id: int = Form(...),
+    user_id: int = Form(...),
+    permissions: int = Form(...),
+):
+    """
+    Update user permissions
+    """
+    return await AdminService.update_user_privileges(request, category_id, user_id, permissions)

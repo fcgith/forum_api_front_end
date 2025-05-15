@@ -15,7 +15,9 @@
                         <i class="bi bi-chevron-right text-muted small"></i>
                         <span class="text-primary">{{ topic.name }}</span>
                     </div>
-                    <h1 class="display-5 fw-bold">{{ topic.name }}</h1>
+                    <h1 class="display-5 fw-bold">
+                        <i class="bi bi-chat-quote-fill text-primary me-2 animate-icon"></i>{{ topic.name }}
+                    </h1>
                 </div>
             </div>
 
@@ -24,34 +26,34 @@
             {% endif %}
 
             <!-- Topic Content -->
-            <div class="card mb-4 border-primary">
+            <div class="card mb-4 border-primary topic-card shadow-sm">
                 <div class="card-header bg-primary bg-opacity-10 d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-chat-square-text fs-4"></i>
+                        <i class="bi bi-chat-square-text fs-4 text-primary"></i>
                         <span class="fw-bold">Topic</span>
                     </div>
                     <div class="d-flex align-items-center gap-2 small text-muted">
                         <i class="bi bi-calendar-event"></i> {{ topic.date }}
                         {% if topic.user_name %}
                         <span class="mx-1">•</span>
-                        <i class="bi bi-person"></i> <a href="/user/{{ topic.user_id }}" class="text-decoration-none">{{ topic.user_name }}</a>
+                        <i class="bi bi-person"></i> <a href="/user/{{ topic.user_id }}" class="text-decoration-none user-link">{{ topic.user_name }}</a>
                         {% endif %}
                     </div>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">{{ topic.content | safe }}</p>
+                    <p class="card-text topic-content">{{ topic.content | safe }}</p>
                 </div>
             </div>
 
             <!-- Replies Section -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <span class="badge bg-primary rounded-pill">
+                    <span class="badge bg-primary rounded-pill replies-count">
                         <i class="bi bi-chat me-1"></i> {{ topic.replies_count | default(0) }} Replies
                     </span>
                 </div>
                 {% if is_authenticated and can_reply %}
-                <a href="/topics/{{ topic.id }}/reply" class="btn btn-primary">
+                <a href="/topics/{{ topic.id }}/reply" class="btn btn-primary action-btn">
                     <i class="bi bi-reply me-1"></i> Reply
                 </a>
                 {% endif %}
@@ -61,40 +63,40 @@
                 <div class="replies-container">
                     {% for reply in replies %}
                         {% if reply.best_reply == 1 %}
-                            <div id="reply-{{ reply.id }}" class="card mb-3 border-success">
+                            <div id="reply-{{ reply.id }}" class="card mb-3 border-success reply-card best-reply shadow-sm">
                                 <div class="card-header bg-success bg-opacity-10 d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-reply fs-5"></i>
+                                        <i class="bi bi-reply fs-5 text-success"></i>
                                         <span class="fw-bold">
                                             Reply #{{ loop.index }}
-                                            <i class="bi bi-check-circle-fill text-success ms-1" title="Best Reply"></i>
+                                            <i class="bi bi-check-circle-fill text-success ms-1 best-reply-icon" title="Best Reply"></i>
                                         </span>
                                     </div>
                                     <div class="d-flex align-items-center gap-2 small text-muted">
                                         <i class="bi bi-calendar-event"></i> {{ reply.date }}
                                         {% if reply.user_name %}
                                         <span class="mx-1">•</span>
-                                        <i class="bi bi-person"></i> <a href="/user/{{ reply.user_id }}" class="text-decoration-none">{{ reply.user_name }}</a>
+                                        <i class="bi bi-person"></i> <a href="/user/{{ reply.user_id }}" class="text-decoration-none user-link">{{ reply.user_name }}</a>
                                         {% endif %}
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <p class="card-text">{{ reply.content | safe }}</p>
+                                    <p class="card-text reply-content">{{ reply.content | safe }}</p>
                                     <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center vote-buttons">
                                             <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline me-2">
                                                 <input type="hidden" name="vote_type" value="{% if user_votes.get(reply.id, 0) == 1 %}0{% else %}1{% endif %}">
-                                                <button type="submit" class="btn btn-sm {% if user_votes.get(reply.id, 0) == 1 %}btn-success{% else %}btn-outline-success{% endif %}">
+                                                <button type="submit" class="btn btn-sm vote-btn {% if user_votes.get(reply.id, 0) == 1 %}btn-success{% else %}btn-outline-success{% endif %}">
                                                     <i class="bi bi-hand-thumbs-up"></i>
                                                 </button>
                                             </form>
-                                            <span class="mx-2 
+                                            <span class="mx-2 vote-count
                                                 {% if reply.likes > 0 %}text-success{% elif reply.likes < 0 %}text-danger{% else %}text-secondary{% endif %}">
                                                 {{ reply.likes }}
                                             </span>
                                             <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline">
                                                 <input type="hidden" name="vote_type" value="{% if user_votes.get(reply.id, 0) == -1 %}0{% else %}-1{% endif %}">
-                                                <button type="submit" class="btn btn-sm {% if user_votes.get(reply.id, 0) == -1 %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                                                <button type="submit" class="btn btn-sm vote-btn {% if user_votes.get(reply.id, 0) == -1 %}btn-danger{% else %}btn-outline-danger{% endif %}">
                                                     <i class="bi bi-hand-thumbs-down"></i>
                                                 </button>
                                             </form>
@@ -102,7 +104,7 @@
                                         {% if is_topic_creator and reply.best_reply == 0 %}
                                         <div>
                                             <form action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}" method="post" class="d-inline">
-                                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                                <button type="submit" class="btn btn-sm btn-outline-success action-btn">
                                                     <i class="bi bi-check-circle me-1"></i> Mark as Best Reply
                                                 </button>
                                             </form>
@@ -115,37 +117,37 @@
                     {% endfor %}
                     {% for reply in replies %}
                     {% if reply.best_reply == 0 %}
-                        <div id="reply-{{ reply.id }}" class="card mb-3 border-secondary">
+                        <div id="reply-{{ reply.id }}" class="card mb-3 border-secondary reply-card regular-reply shadow-sm">
                             <div class="card-header bg-secondary bg-opacity-10 d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-reply fs-5"></i>
+                                    <i class="bi bi-reply fs-5 text-secondary"></i>
                                     <span class="fw-bold">Reply #{{ loop.index }}</span>
                                 </div>
                                 <div class="d-flex align-items-center gap-2 small text-muted">
                                     <i class="bi bi-calendar-event"></i> {{ reply.date }}
                                     {% if reply.user_name %}
                                     <span class="mx-1">•</span>
-                                    <i class="bi bi-person"></i> <a href="/user/{{ reply.user_id }}" class="text-decoration-none">{{ reply.user_name }}</a>
+                                    <i class="bi bi-person"></i> <a href="/user/{{ reply.user_id }}" class="text-decoration-none user-link">{{ reply.user_name }}</a>
                                     {% endif %}
                                 </div>
                             </div>
                             <div class="card-body">
-                                <p class="card-text">{{ reply.content | safe }}</p>
+                                <p class="card-text reply-content">{{ reply.content | safe }}</p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <div class="d-flex align-items-center">
+                                    <div class="d-flex align-items-center vote-buttons">
                                         <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline me-2">
                                             <input type="hidden" name="vote_type" value="{% if user_votes.get(reply.id, 0) == 1 %}0{% else %}1{% endif %}">
-                                            <button type="submit" class="btn btn-sm {% if user_votes.get(reply.id, 0) == 1 %}btn-success{% else %}btn-outline-success{% endif %}">
+                                            <button type="submit" class="btn btn-sm vote-btn {% if user_votes.get(reply.id, 0) == 1 %}btn-success{% else %}btn-outline-success{% endif %}">
                                                 <i class="bi bi-hand-thumbs-up"></i>
                                             </button>
                                         </form>
-                                        <span class="mx-2 
+                                        <span class="mx-2 vote-count
                                             {% if reply.likes > 0 %}text-success{% elif reply.likes < 0 %}text-danger{% else %}text-secondary{% endif %}">
                                             {{ reply.likes }}
                                         </span>
                                         <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline">
                                             <input type="hidden" name="vote_type" value="{% if user_votes.get(reply.id, 0) == -1 %}0{% else %}-1{% endif %}">
-                                            <button type="submit" class="btn btn-sm {% if user_votes.get(reply.id, 0) == -1 %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                                            <button type="submit" class="btn btn-sm vote-btn {% if user_votes.get(reply.id, 0) == -1 %}btn-danger{% else %}btn-outline-danger{% endif %}">
                                                 <i class="bi bi-hand-thumbs-down"></i>
                                             </button>
                                         </form>
@@ -153,7 +155,7 @@
                                     {% if is_topic_creator %}
                                     <div>
                                         <form action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}" method="post" class="d-inline">
-                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                            <button type="submit" class="btn btn-sm btn-outline-success action-btn">
                                                 <i class="bi bi-check-circle me-1"></i> Mark as Best Reply
                                             </button>
                                         </form>
@@ -173,18 +175,113 @@
         </div>
 
         <style>
-            .card.border-primary {
-                border-left: 4px solid #0d6efd;
+            /* Animation for the header icon */
+            .animate-icon {
+                animation: pulse 2s infinite;
             }
 
-            .card.border-secondary {
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+
+            /* Card styling */
+            .topic-card {
+                border-left: 4px solid #0d6efd;
+                transition: all 0.3s ease;
+            }
+
+            .topic-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+            }
+
+            .topic-content {
+                line-height: 1.6;
+            }
+
+            .reply-card {
+                transition: all 0.3s ease;
+            }
+
+            .best-reply {
+                border-left: 4px solid #198754;
+            }
+
+            .regular-reply {
                 border-left: 4px solid #6c757d;
             }
 
+            .reply-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+            }
+
+            .best-reply-icon {
+                animation: pulse 2s infinite;
+            }
+
+            .reply-content {
+                line-height: 1.6;
+            }
+
+            /* Badge styling */
+            .replies-count {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.8rem;
+                box-shadow: 0 2px 5px rgba(13, 110, 253, 0.2);
+                transition: all 0.3s ease;
+            }
+
+            /* Button styling */
+            .action-btn {
+                border-radius: 0.5rem;
+                padding: 0.5rem 1rem;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            .action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            }
+
+            /* Vote buttons styling */
+            .vote-buttons {
+                transition: all 0.3s ease;
+            }
+
+            .vote-btn {
+                transition: all 0.3s ease;
+                border-radius: 0.5rem;
+            }
+
+            .vote-btn:hover {
+                transform: translateY(-2px);
+            }
+
+            .vote-count {
+                font-weight: bold;
+                transition: all 0.3s ease;
+            }
+
+            /* User link styling */
+            .user-link {
+                transition: all 0.3s ease;
+            }
+
+            .user-link:hover {
+                color: #0d6efd !important;
+                text-decoration: underline !important;
+            }
+
+            /* Replies container styling */
             .replies-container {
                 margin-left: 1rem;
                 border-left: 2px dashed #dee2e6;
                 padding-left: 1rem;
+                transition: all 0.3s ease;
             }
         </style>
 {% endblock %}

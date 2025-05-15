@@ -68,7 +68,7 @@ class ConversationsService:
             )
 
     @classmethod
-    async def get_conversation_messages(cls, request, conversation_user_id):
+    async def get_conversation_messages(cls, request, conversation_user_id, error_message=None):
         token = Cookies.get_access_token_from_cookie(request)
         data = await AuthService.get_user_data_from_cookie(request)
 
@@ -126,8 +126,64 @@ class ConversationsService:
             data["title"] = f"Conversation with {conversation_user['username']} - Forum API Frontend"
             data["request"] = request
 
+            # Add error message if provided
+            if error_message:
+                data["error_message"] = error_message
+
             return templates.TemplateResponse(
                 "conversation_messages.html",
                 data,
                 headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
             )
+
+    @classmethod
+    async def send_message(cls, request, conversation_user_id):
+        token = Cookies.get_access_token_from_cookie(request)
+        data = await AuthService.get_user_data_from_cookie(request)
+
+        if not data["is_authenticated"]:
+            raise not_authorized
+
+        # Get form data
+        form_data = await request.form()
+        message_content = form_data.get("message")
+
+        if not message_content:
+            # Return to the conversation page with an error message
+            return await cls.get_conversation_messages(request, conversation_user_id, error_message="Message cannot be empty")
+
+        # Prepare the request body
+        message_data = {
+            "content": message_content,
+            "receiver_id": conversation_user_id
+        }
+
+        # Send the message to the API
+        async with httpx.AsyncClient() as client:
+            headers = {"Content-Type": "application/json", "Cache-Control": "no-cache"}
+            try:
+                response = await client.post(
+                    f"http://172.245.56.116:8000/conversations/messages/?token={token}",
+                    json=message_data,
+                    headers=headers
+                )
+
+                # Check if the message was sent successfully
+                if response.status_code == 200 or response.status_code == 201:
+                    # Redirect back to the conversation page
+                    return RedirectResponse(url=f"/conversations/{conversation_user_id}", status_code=303)
+                else:
+                    # Try to get error message from response
+                    try:
+                        error_data = response.json()
+                        error_message = error_data.get("message", error_data.get("detail", f"Error sending message: {response.status_code}"))
+                    except:
+                        error_message = f"Error sending message: {response.status_code}"
+
+                    # Return to the conversation page with the error message
+                    return await cls.get_conversation_messages(request, conversation_user_id, error_message=error_message)
+
+            except httpx.RequestError as e:
+                # Handle connection errors
+                error_message = f"Error connecting to API: {str(e)}"
+                return await cls.get_conversation_messages(request, conversation_user_id, error_message=error_message)

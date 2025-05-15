@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid px-4 py-3">
+        <div class="row mb-4">
+            <div class="col">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <a href="/" class="text-secondary text-decoration-none">
+                        <i class="bi bi-house-door"></i>
+                    </a>
+                    <i class="bi bi-chevron-right text-muted small"></i>
+                    <a href="/admin" class="text-secondary text-decoration-none">Admin Panel</a>
+                    <i class="bi bi-chevron-right text-muted small"></i>
+                    <span class="text-primary">Update User Category Privileges</span>
+                </div>
+                <h1 class="display-5 fw-bold">Update User Category Privileges</h1>
+                <p class="lead">Set access levels for users to categories.</p>
+            </div>
+        </div>
+
+        <form method="post" action="/admin/update-privileges">
+            <div class="mb-3">
+                <label for="category_id" class="form-label">Select Category</label>
+                <select class="form-select" id="category_id" name="category_id" required>
+                    <option value="" selected disabled>Choose a category...</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">
+                            {{ category.name }} (ID: {{ category.id }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="user_id" class="form-label">User ID</label>
+                <input type="number" class="form-control" id="user_id" name="user_id" required min="1">
+                <div class="form-text">Enter the numeric ID of the user</div>
+            </div>
+            <div class="mb-3">
+                <label for="permissions" class="form-label">Permission Level</label>
+                <select class="form-select" id="permissions" name="permissions" required>
+                    <option value="" selected disabled>Select permission level...</option>
+                    <option value="0">No Access</option>
+                    <option value="1">Normal Access</option>
+                    <option value="2">Read-Only Access</option>
+                    <option value="3">Write Access</option>
+                </select>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/admin" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Update Privileges</button>
+            </div>
+        </form>
+
+        {% if message %}
+            {% if success %}
+                <div class="alert alert-success text-center mt-3">{{ message | safe }}</div>
+            {% else %}
+                <div class="alert alert-danger text-center mt-3">{{ message | safe }}</div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %} 

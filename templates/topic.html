@@ -52,9 +52,13 @@
                         <i class="bi bi-chat me-1"></i> {{ topic.replies_count | default(0) }} Replies
                     </span>
                 </div>
-                {% if is_authenticated and can_reply %}
+                {% if is_authenticated and can_reply and topic.locked == 1 %}
                 <a href="/topics/{{ topic.id }}/reply" class="btn btn-primary action-btn">
                     <i class="bi bi-reply me-1"></i> Reply
+                </a>
+                {% else %}
+                <a href="#" class="btn btn-primary disabled" tabindex="-1" aria-disabled="true">
+                    <i class="bi bi-lock me-1"></i> Locked
                 </a>
                 {% endif %}
             </div>

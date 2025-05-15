@@ -43,13 +43,13 @@ class AdminService:
             {
                 "name": "Lock Category",
                 "description": "Lock category from the forum.",
-                "icon": "bi-lock-plus",
+                "icon": "bi-lock",
                 "url": "/admin/lock-category"
             },
             {
                 "name": "Lock Topic",
                 "description": "Lock topic from the forum.",
-                "icon": "bi-lock-plus",
+                "icon": "bi-lock-fill",
                 "url": "/admin/lock-topic"
             },
             {

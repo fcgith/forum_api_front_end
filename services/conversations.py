@@ -35,7 +35,7 @@ class ConversationsService:
             for user in conversations:
                 try:
                     last_message_response = await client.get(
-                        f"http://172.245.56.116:8000/conversations/last-message/?user_id={user['id']}&token={token}",
+                        f"http://172.245.56.116:8000/conversations/last-message/{user['id']}?token={token}",
                         headers=headers
                     )
 

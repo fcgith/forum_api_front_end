@@ -43,8 +43,8 @@
                             <div class="fw-bold text-primary category-name">
                                 <i class="bi bi-chat-square-text me-2 category-icon"></i>{{ topic.name }}
                             </div>
-                            <p class="text-muted mb-1 small category-description">{{ topic.content|truncate(80) }}</p>
-                            <div class="d-flex align-items-center gap-2 small text-muted">
+                            <p class="text-muted mb-1 category-description">{{ topic.content|truncate(80) }}</p>
+                            <div class="d-flex align-items-center gap-2 text-muted">
                                 <i class="bi bi-calendar-event"></i> {{ topic.date }}
                                 {% if topic.user_name %}
                                 <span class="mx-1">•</span>
@@ -69,33 +69,36 @@
     </div>
 
     <style>
-        /* Animation for the header icon */
         .animate-icon {
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
 
-        /* List group and item styling */
         .list-group {
             border-radius: 0.5rem;
             overflow: hidden;
         }
 
         .category-item {
-            padding: 1rem;
+            padding: 1.5rem;
             border-left: 4px solid #0d6efd;
             transition: all 0.3s ease;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
+        .category-item:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
         .category-item:hover {
             background-color: rgba(13, 110, 253, 0.05);
             transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .category-name {
@@ -120,7 +123,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Badge styling */
         .badge-pill {
             padding: 0.35em 0.65em;
             border-radius: 50rem;
@@ -147,10 +149,10 @@
             box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
         }
 
-        /* Arrow hover effect */
         .hover-box:hover .hover-arrow {
             opacity: 1 !important;
             transform: translateX(3px);
+            color: #0056b3;
             transition: all 0.3s ease;
         }
 
@@ -158,7 +160,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Text truncate for multiline */
         .text-truncate-multiline {
             display: -webkit-box;
             -webkit-line-clamp: 2;

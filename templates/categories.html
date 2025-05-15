@@ -29,18 +29,18 @@
                                         <span class="badge bg-secondary ms-2 badge-pill">
                                             <i class="bi bi-eye-slash-fill me-1"></i>Hidden
                                         </span>
-                                    {% endif %}
-                                    {% if category.permission_type|lower == "read_only_access" %}
-                                        <span class="badge bg-info ms-2 badge-pill">
-                                            <i class="bi bi-book-fill me-1"></i>Read Only
-                                        </span>
-                                    {% elif category.permission_type|lower == "write_access" %}
-                                        <span class="badge bg-success ms-2 badge-pill">
-                                            <i class="bi bi-pencil-fill me-1"></i>Write
-                                        </span>
+                                        {% if category.permission_type|lower == "read_only_access" %}
+                                            <span class="badge bg-info ms-2 badge-pill">
+                                                <i class="bi bi-book-fill me-1"></i>Read Only
+                                            </span>
+                                        {% elif category.permission_type|lower == "write_access" %}
+                                            <span class="badge bg-success ms-2 badge-pill">
+                                                <i class="bi bi-pencil-fill me-1"></i>Write
+                                            </span>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
-                                <p class="text-muted mb-1 small category-description">{{ category.description or "No description available" }}</p>
+                                <p class="text-muted mb-1 category-description">{{ category.description or "No description available" }}</p>
                             </div>
                             <div class="d-flex align-items-center gap-3">
                                 <span class="badge bg-primary rounded-pill topics-count">
@@ -66,7 +66,7 @@
 
             @keyframes pulse {
                 0% { transform: scale(1); }
-                50% { transform: scale(1.1); }
+                50% { transform: scale(1.05); }
                 100% { transform: scale(1); }
             }
 
@@ -77,15 +77,20 @@
             }
 
             .category-item {
-                padding: 1rem;
+                padding: 1.5rem;
                 border-left: 4px solid #0d6efd;
                 transition: all 0.3s ease;
                 border-bottom: 1px solid rgba(0,0,0,0.05);
             }
 
+            .category-item:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+
             .category-item:hover {
                 background-color: rgba(13, 110, 253, 0.05);
                 transform: translateX(5px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             }
 
             .category-name {
@@ -141,6 +146,7 @@
             .hover-box:hover .hover-arrow {
                 opacity: 1 !important;
                 transform: translateX(3px);
+                color: #0056b3;
                 transition: all 0.3s ease;
             }
 

@@ -1,5 +1,8 @@
 import httpx
+
+from services.auth import AuthService
 from services.cookies import Cookies
+
 
 class PermissionService:
     # Permission types
@@ -24,19 +27,23 @@ class PermissionService:
         if not token:
             return cls.NO_ACCESS
 
-        async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            response = await client.get(
-                f"http://172.245.56.116:8000/categories/{category_id}/check-permission?token={token}",
-                headers=headers
-            )
+        user_data = await AuthService.get_user_data_from_cookie(request)
+        if not user_data["admin"] > 0:
+            async with httpx.AsyncClient() as client:
+                headers = {"Cache-Control": "no-cache"}
+                response = await client.get(
+                    f"http://172.245.56.116:8000/categories/{category_id}/check-permission?token={token}",
+                    headers=headers
+                )
 
-            if response.status_code == 200:
-                data = response.json()
-                return data.get("access_type", cls.NO_ACCESS)
+                if response.status_code == 200:
+                    data = response.json()
+                    return data.get("access_type", cls.NO_ACCESS)
 
-            # If there's an error with the API call, default to no access
-            return cls.NO_ACCESS
+                # If there's an error with the API call, default to no access
+                return cls.NO_ACCESS
+        else:
+            return "write_access"
 
     @classmethod
     def can_view_category(cls, permission_type, category_hidden=False):

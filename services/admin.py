@@ -58,6 +58,12 @@ class AdminService:
                 "icon": "bi-people",
                 "url": "/admin/update-privileges"
             },
+            {
+                "name": "View Privilege Users",
+                "description": "View users with access to a private category",
+                "icon": "bi-people",
+                "url": "/admin/view-privilege-users"
+            }
         ]
 
         data = {
@@ -519,6 +525,75 @@ class AdminService:
             }
             return templates.TemplateResponse(
                 "update_privileges.html",
+                data,
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )
+    @classmethod
+    async def get_view_privileged_users_form(cls, request):
+        user_data = await cls.verify_admin(request)
+        token = Cookies.get_access_token_from_cookie(request)
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"http://172.245.56.116:8000/categories/?token={token}",
+                headers={"Cache-Control": "no-cache"}
+            )
+            if response.status_code != 200:
+                raise not_authorized
+            categories = response.json()
+            data = {
+                "request": request,
+                "title": "View Privileged Users - Forum API Frontend",
+                "is_authenticated": user_data["is_authenticated"],
+                "admin": user_data["admin"],
+                "categories": categories
+            }
+            return templates.TemplateResponse(
+                "view_privileged_users_form.html",
+                data,
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )
+
+    @classmethod
+    async def view_privileged_users(cls, request, category_id: int):
+        user_data = await cls.verify_admin(request)
+        token = Cookies.get_access_token_from_cookie(request)
+        async with httpx.AsyncClient() as client:
+            # Get categories for the dropdown
+            categories_response = await client.get(
+                f"http://172.245.56.116:8000/categories/?token={token}",
+                headers={"Cache-Control": "no-cache"}
+            )
+            if categories_response.status_code != 200:
+                raise not_authorized
+            categories = categories_response.json()
+            # Get privileged users for the selected category
+            response = await client.get(
+                f"http://172.245.56.116:8000/categories/{category_id}/get-users-with-permissions?token={token}",
+                headers={"Cache-Control": "no-cache"}
+            )
+            privileged_users = []
+            if response.status_code == 200:
+                privileged_users = response.json()
+            # Permission mapping
+            permission_map = {
+                0: "No Access",
+                1: "Normal Access",
+                2: "Read-Only Access",
+                3: "Write Access"
+            }
+            for entry in privileged_users:
+                entry["permission_text"] = permission_map.get(entry["permission"], str(entry["permission"]))
+            data = {
+                "request": request,
+                "title": "View Privileged Users - Forum API Frontend",
+                "is_authenticated": user_data["is_authenticated"],
+                "admin": user_data["admin"],
+                "categories": categories,
+                "selected_category_id": category_id,
+                "privileged_users": privileged_users
+            }
+            return templates.TemplateResponse(
+                "view_privileged_users_result.html",
                 data,
                 headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
             )

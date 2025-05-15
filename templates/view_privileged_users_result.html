@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <a href="/" class="text-secondary text-decoration-none">
+                    <i class="bi bi-house-door"></i>
+                </a>
+                <i class="bi bi-chevron-right text-muted small"></i>
+                <a href="/admin" class="text-secondary text-decoration-none">Admin Panel</a>
+                <i class="bi bi-chevron-right text-muted small"></i>
+                <span class="text-primary">View Privileged Users</span>
+            </div>
+            <h1 class="display-5 fw-bold">View Privileged Users</h1>
+            <p class="lead">See users with special permissions for a category.</p>
+        </div>
+    </div>
+    <form method="post" action="/admin/view-privileged-users">
+        <div class="mb-3">
+            <label for="category_id" class="form-label">Select Category</label>
+            <select class="form-select" id="category_id" name="category_id" required>
+                <option value="" disabled>Choose a category...</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if selected_category_id == category.id %}selected{% endif %}>
+                        {{ category.name }} (ID: {{ category.id }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="/admin" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">View Privileged Users</button>
+        </div>
+    </form>
+    {% if privileged_users %}
+        <div class="mt-4">
+            <h2 class="h5">Privileged Users</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Permission</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in privileged_users %}
+                            <tr>
+                                <td>{{ entry.user.id }}</td>
+                                <td>{{ entry.user.username }}</td>
+                                <td>{{ entry.user.email }}</td>
+                                <td>{{ entry.permission_text }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info mt-4">No privileged users found for this category.</div>
+    {% endif %}
+</div>
+{% endblock %} 

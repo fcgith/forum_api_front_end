@@ -98,3 +98,20 @@ async def update_user_privileges(
     Update user permissions
     """
     return await AdminService.update_user_privileges(request, category_id, user_id, permissions)
+
+@router.get("/view-privilege-users",response_class=HTMLResponse)
+async def view_privilege_users(request: Request):
+    """
+    Form for updating a user's permissions.
+    """
+    return await AdminService.get_view_privileged_users_form(request)
+
+@router.post("/view-privileged-users",response_class=HTMLResponse)
+async def update_view_privilege_users(
+    request: Request,
+    category_id: int = Form(...),
+):
+    """
+    Update user permissions
+    """
+    return await AdminService.view_privileged_users(request, category_id)

@@ -8,6 +8,7 @@ from routers.category import router as categories_router
 from routers.topic import router as topics_router
 from routers.search import router as search_router
 from routers.admin import router as admin_router
+from routers.conversations import router as conversations_router
 
 from services.jinja import templates
 
@@ -20,6 +21,7 @@ app.include_router(categories_router, prefix="/categories")
 app.include_router(topics_router, prefix="/topics")
 app.include_router(search_router, prefix="/search")
 app.include_router(admin_router, prefix="/admin")
+app.include_router(conversations_router, prefix="/conversations")
 
 @app.exception_handler(404)
 async def custom_404_handler(request: Request, exc: HTTPException):

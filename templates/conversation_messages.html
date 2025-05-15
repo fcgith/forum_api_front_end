@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <a href="/" class="text-secondary text-decoration-none">
+                    <i class="bi bi-house-door"></i>
+                </a>
+                <i class="bi bi-chevron-right text-muted small"></i>
+                <a href="/conversations" class="text-secondary text-decoration-none">Conversations</a>
+                <i class="bi bi-chevron-right text-muted small"></i>
+                <a href="/user/{{ conversation_user.id }}" class="text-primary text-decoration-none">{{ conversation_user.username }}</a>
+            </div>
+            <h1 class="display-5 fw-bold">
+                <div class="d-flex align-items-center gap-3">
+                    {% if conversation_user.avatar %}
+                    <img src="{{ conversation_user.avatar }}" alt="{{ conversation_user.username }}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+                    {% else %}
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="bi bi-person-fill text-primary" style="font-size: 2rem;"></i>
+                    </div>
+                    {% endif %}
+                    Conversation with {{ conversation_user.username }}
+                </div>
+            </h1>
+        </div>
+    </div>
+
+    <div class="messages-container mb-4">
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.sender_id == user_id %}
+                    <!-- Message from authenticated user (displayed on the left) -->
+                    <div class="message-row d-flex justify-content-start mb-3">
+                        <div class="me-2">
+                            {% if auth_user.avatar %}
+                            <img src="{{ auth_user.avatar }}" alt="{{ auth_user.username }}" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                            {% else %}
+                            <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                <i class="bi bi-person-fill text-primary" style="font-size: 1rem;"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="message-bubble bg-primary text-white p-3 rounded-3 shadow-sm" style="max-width: 75%;">
+                            <div class="message-content">{{ message.content }}</div>
+                            <div class="message-time text-end small opacity-75 mt-1">{{ message.date.replace('T', ' ') }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Message from conversation partner (displayed on the right) -->
+                    <div class="message-row d-flex justify-content-end mb-3">
+                        <div class="message-bubble bg-success text-white p-3 rounded-3 shadow-sm" style="max-width: 75%;">
+                            <div class="message-content">{{ message.content }}</div>
+                            <div class="message-time text-end small opacity-75 mt-1">{{ message.date.replace('T', ' ') }}</div>
+                        </div>
+                        <div class="ms-2">
+                            {% if conversation_user.avatar %}
+                            <img src="{{ conversation_user.avatar }}" alt="{{ conversation_user.username }}" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                            {% else %}
+                            <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                <i class="bi bi-person-fill text-primary" style="font-size: 1rem;"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle me-2" style="font-size: 1.5rem;"></i> No messages found in this conversation. Start chatting now!
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Message input form (placeholder) -->
+    <div class="message-input-container">
+        <form class="d-flex gap-2">
+            <input type="text" class="form-control" placeholder="Type your message..." disabled>
+            <button type="submit" class="btn btn-primary" disabled>
+                <i class="bi bi-send"></i>
+            </button>
+        </form>
+        <div class="text-muted small mt-2">
+            <i class="bi bi-info-circle"></i> Message sending functionality will be implemented in the future.
+        </div>
+    </div>
+</div>
+
+<style>
+    .messages-container {
+        height: 60vh;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+    }
+
+    .message-bubble {
+        border-radius: 1rem;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Scroll to the bottom of the messages container
+        const messagesContainer = document.querySelector('.messages-container');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    });
+</script>
+{% endblock %}

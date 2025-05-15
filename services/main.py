@@ -27,7 +27,7 @@ class MainService:
                 for category in all_categories:
                     # Check permission for this category
                     if user_data["admin"] > 0:
-                        permission_type = 3
+                        permission_type = "write_access"
                     else:
                         permission_type = await PermissionService.check_category_permission(request, category["id"])
                     category_hidden = category.get("hidden", False)

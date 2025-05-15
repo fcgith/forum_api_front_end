@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">{{ topic.content }}</p>
+                    <p class="card-text">{{ topic.content | safe }}</p>
                 </div>
             </div>
 
@@ -79,7 +79,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <p class="card-text">{{ reply.content }}</p>
+                                    <p class="card-text">{{ reply.content | safe }}</p>
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <div class="d-flex align-items-center">
                                             <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline me-2">
@@ -130,7 +130,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <p class="card-text">{{ reply.content }}</p>
+                                <p class="card-text">{{ reply.content | safe }}</p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <div class="d-flex align-items-center">
                                         <form action="/topics/{{ topic.id }}/vote/{{ reply.id }}" method="post" class="d-inline me-2">

@@ -102,13 +102,15 @@ class TopicService:
         data = {"request": request, "title": "Reply to Topic - Forum API Frontend"}
 
         # Get authentication status
-        token = Cookies.get_access_token_from_cookie(request)
-        is_authenticated = token is not None
-        data["is_authenticated"] = is_authenticated
+        data = await AuthService.verify_logged_in(request)
+        data["request"] = request
+        data["title"] = "Reply to Topic - Forum API Frontend"
 
-        if not is_authenticated:
+        if not data["is_authenticated"]:
             return RedirectResponse(url="/auth/login")
 
+        # Get token for API requests
+        token = Cookies.get_access_token_from_cookie(request)
         headers = {}
         if token:
             headers["Authorization"] = f"Bearer {token}"
@@ -158,9 +160,12 @@ class TopicService:
     @classmethod
     async def post_reply(cls, request: Request, topic_id: int):
         # Get authentication status
-        token = Cookies.get_access_token_from_cookie(request)
-        if not token:
+        data = await AuthService.verify_logged_in(request)
+        if not data["is_authenticated"]:
             return RedirectResponse(url="/auth/login")
+
+        # Get token for API requests
+        token = Cookies.get_access_token_from_cookie(request)
 
         # Get topic details to check category permissions
         async with httpx.AsyncClient() as client:
@@ -220,8 +225,12 @@ class TopicService:
                 data = {"request": request, "message": "Failed to post reply", "topic": topic_data}
                 return templates.TemplateResponse("reply.html", data)
 
-            # Redirect back to the topic page
-            return RedirectResponse(url=f"/topics/{topic_id}", status_code=303)
+            # Extract the reply_id from the API response
+            response_data = response.json()
+            reply_id = response_data.get("id")
+
+            # Redirect back to the topic page with anchor to the new reply
+            return RedirectResponse(url=f"/topics/{topic_id}#reply-{reply_id}", status_code=303)
 
     @classmethod
     async def mark_best_reply(cls, request: Request, reply_id: int, topic_id: int):
@@ -237,9 +246,12 @@ class TopicService:
             RedirectResponse: Redirects back to the topic page
         """
         # Get authentication status
-        token = Cookies.get_access_token_from_cookie(request)
-        if not token:
+        data = await AuthService.verify_logged_in(request)
+        if not data["is_authenticated"]:
             return RedirectResponse(url="/auth/login")
+
+        # Get token for API requests
+        token = Cookies.get_access_token_from_cookie(request)
 
         # Get topic details to check if the user is the topic creator
         async with httpx.AsyncClient() as client:
@@ -281,8 +293,8 @@ class TopicService:
             if response.status_code != 200:
                 return templates.TemplateResponse("500.html", {"request": request}, status_code=500)
 
-            # Redirect back to the topic page
-            return RedirectResponse(url=f"/topics/{topic_id}", status_code=303)
+            # Redirect back to the topic page with anchor to the best reply
+            return RedirectResponse(url=f"/topics/{topic_id}#reply-{reply_id}", status_code=303)
 
     @classmethod
     async def vote_reply(cls, request: Request, reply_id: int, topic_id: int, vote_type: int):
@@ -299,9 +311,12 @@ class TopicService:
             RedirectResponse: Redirects back to the topic page
         """
         # Get authentication status
-        token = Cookies.get_access_token_from_cookie(request)
-        if not token:
+        data = await AuthService.verify_logged_in(request)
+        if not data["is_authenticated"]:
             return RedirectResponse(url="/auth/login")
+
+        # Get token for API requests
+        token = Cookies.get_access_token_from_cookie(request)
 
         # Send PUT request to vote on the reply
         async with httpx.AsyncClient() as client:

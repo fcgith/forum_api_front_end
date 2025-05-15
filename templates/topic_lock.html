@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid px-4 py-3">
+        <div class="row mb-4">
+            <div class="col">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <a href="/" class="text-secondary text-decoration-none">
+                        <i class="bi bi-house-door"></i>
+                    </a>
+                    <i class="bi bi-chevron-right text-muted small"></i>
+                    <a href="/admin" class="text-secondary text-decoration-none">Admin Panel</a>
+                    <i class="bi bi-chevron-right text-muted small"></i>
+                    <span class="text-primary">Lock Topic</span>
+                </div>
+                <h1 class="display-5 fw-bold">Lock Topic</h1>
+                <p class="lead">Lock a topic to prevent new replies.</p>
+            </div>
+        </div>
+
+        <form method="post" action="/admin/lock-topic">
+            <div class="mb-3">
+                <label for="topic_id" class="form-label">Topic ID</label>
+                <input type="number" class="form-control" id="topic_id" name="topic_id" required placeholder="Enter topic ID">
+                <div class="form-text">Enter the ID of the topic you want to lock.</div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/admin" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Lock Topic</button>
+            </div>
+        </form>
+
+        {% if message %}
+            {% if success %}
+                <div class="alert alert-success text-center mt-3">{{ message | safe }}</div>
+            {% else %}
+                <div class="alert alert-danger text-center mt-3">{{ message | safe }}</div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

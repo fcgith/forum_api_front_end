@@ -322,5 +322,5 @@ class TopicService:
             if response.status_code != 200:
                 return templates.TemplateResponse("500.html", {"request": request}, status_code=500)
 
-            # Redirect back to the topic page
-            return RedirectResponse(url=f"/topics/{topic_id}", status_code=303)
+            # Redirect back to the topic page with anchor to the voted reply
+            return RedirectResponse(url=f"/topics/{topic_id}#reply-{reply_id}", status_code=303)

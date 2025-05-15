@@ -1,5 +1,5 @@
 import httpx
-from fastapi import Request
+from fastapi import Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from services.auth import AuthService
@@ -127,3 +127,128 @@ class UserService:
                 template_data,
                 headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
             )
+
+    @classmethod
+    async def get_avatar_change_page(cls, request: Request):
+        """
+        Display the avatar change page.
+
+        Args:
+            request: The FastAPI request object
+
+        Returns:
+            HTMLResponse: The rendered avatar change page
+        """
+        # Verify the user is logged in
+        user_data = await AuthService.verify_logged_in(request)
+
+        # Prepare the data for the template
+        template_data = {
+            "request": request,
+            "title": "Change Avatar",
+            "is_authenticated": True,
+            "admin": user_data.get("admin", False)
+        }
+
+        # Render the avatar change template
+        return templates.TemplateResponse(
+            "profile_avatar.html",
+            template_data,
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+        )
+
+    @classmethod
+    async def update_avatar(cls, request: Request):
+        """
+        Process the avatar update form submission.
+
+        Args:
+            request: The FastAPI request object
+
+        Returns:
+            HTMLResponse: The rendered avatar change page with success/error message
+        """
+        # Verify the user is logged in
+        user_data = await AuthService.verify_logged_in(request)
+
+        # Get the token from the cookie
+        token = Cookies.get_access_token_from_cookie(request)
+        if not token:
+            raise not_authorized
+
+        # Get the form data
+        form_data = await request.form()
+        avatar_link = form_data.get("avatar_link")
+
+        if not avatar_link:
+            # Prepare the data for the template with error message
+            template_data = {
+                "request": request,
+                "title": "Change Avatar",
+                "is_authenticated": True,
+                "admin": user_data.get("admin", False),
+                "message": "Please provide an image URL",
+                "success": False
+            }
+
+            # Render the avatar change template with error message
+            return templates.TemplateResponse(
+                "profile_avatar.html",
+                template_data,
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )
+
+        # Make the API call to update the avatar
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.put(
+                    f"http://172.245.56.116:8000/users/avatar/?token={token}&link={avatar_link}",
+                    headers={"Cache-Control": "no-cache"}
+                )
+
+                # Prepare the template data based on the response
+                template_data = {
+                    "request": request,
+                    "title": "Change Avatar",
+                    "is_authenticated": True,
+                    "admin": user_data.get("admin", False)
+                }
+
+                if response.status_code == 200:
+                    template_data["message"] = "Avatar updated successfully!"
+                    template_data["success"] = True
+                else:
+                    # Try to get error message from response
+                    try:
+                        error_data = response.json()
+                        error_message = error_data.get("message", error_data.get("detail", f"Error updating avatar: {response.status_code}"))
+                    except:
+                        error_message = f"Error updating avatar: {response.status_code}"
+
+                    template_data["message"] = error_message
+                    template_data["success"] = False
+
+                # Render the avatar change template with success/error message
+                return templates.TemplateResponse(
+                    "profile_avatar.html",
+                    template_data,
+                    headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+                )
+
+            except httpx.RequestError as e:
+                # Handle connection errors
+                template_data = {
+                    "request": request,
+                    "title": "Change Avatar",
+                    "is_authenticated": True,
+                    "admin": user_data.get("admin", False),
+                    "message": f"Error connecting to API: {str(e)}",
+                    "success": False
+                }
+
+                # Render the avatar change template with error message
+                return templates.TemplateResponse(
+                    "profile_avatar.html",
+                    template_data,
+                    headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+                )

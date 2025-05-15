@@ -15,28 +15,115 @@
                     <i class="bi bi-chevron-right text-muted small"></i>
                     <span class="text-primary">Add New Topic</span>
                 </div>
-                <h1 class="display-5 fw-bold">Create New Topic</h1>
+                <h1 class="display-5 fw-bold">
+                    <i class="bi bi-pencil-square text-primary me-2 animate-icon"></i>Create New Topic
+                </h1>
                 <p class="lead">Share your thoughts with the community.</p>
             </div>
         </div>
 
-        <form method="post" action="/categories/{{ category.id }}/new-topic">
-            <div class="mb-3">
-                <label for="name" class="form-label">Topic Title</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+        <div class="card shadow-sm border-primary mb-4">
+            <div class="card-header bg-primary bg-opacity-10">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-pencil-square fs-4 text-primary"></i>
+                    <span class="fw-bold">Topic Details</span>
+                </div>
             </div>
-            <div class="mb-4">
-                <label for="content" class="form-label">Content</label>
-                <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+            <div class="card-body">
+                <form method="post" action="/categories/{{ category.id }}/new-topic">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">
+                            <i class="bi bi-type-h1 me-1 text-primary"></i> Topic Title
+                        </label>
+                        <input type="text" class="form-control form-control-lg topic-title-input" id="name" name="name" placeholder="Enter a descriptive title" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="content" class="form-label">
+                            <i class="bi bi-text-paragraph me-1 text-primary"></i> Content
+                        </label>
+                        <textarea class="form-control topic-content-input" id="content" name="content" rows="10" placeholder="Share your thoughts here..." required></textarea>
+                        <div class="form-text">You can use line breaks to format your content.</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="/categories/{{ category.id }}" class="btn btn-secondary action-btn">
+                            <i class="bi bi-x-circle me-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary action-btn">
+                            <i class="bi bi-check-circle me-1"></i> Create Topic
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <a href="/categories/{{ category.id }}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Create Topic</button>
-            </div>
-        </form>
+        </div>
 
         {% if message %}
-            <div class="alert alert-danger text-center mt-3">{{ message | safe }}</div>
+            <div class="alert alert-danger text-center mt-3">
+                <i class="bi bi-exclamation-triangle me-2"></i> {{ message | safe }}
+            </div>
         {% endif %}
     </div>
+    <style>
+        /* Animation for the header icon */
+        .animate-icon {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Card styling */
+        .card {
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .card.border-primary {
+            border-left: 4px solid #0d6efd;
+        }
+
+        /* Form styling */
+        .topic-title-input, .topic-content-input {
+            transition: all 0.3s ease;
+            border: 1px solid #ced4da;
+        }
+
+        .topic-title-input:focus, .topic-content-input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Button styling */
+        .action-btn {
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Alert styling */
+        .alert {
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 {% endblock %}

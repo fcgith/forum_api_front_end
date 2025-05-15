@@ -32,16 +32,18 @@
                                     {% endif %}
                                     {% if category.hidden %}
                                         <span class="badge bg-secondary ms-2 badge-pill">
-                                            <i class="bi bi-eye-slash-fill me-1"></i>Hidden
+                                            <i class="bi bi-eye-slash-fill"></i>
                                         </span>
-                                        {% if category.permission_type|lower == "read_only_access" %}
-                                            <span class="badge bg-info ms-2 badge-pill">
-                                                <i class="bi bi-book-fill me-1"></i>Read Only
-                                            </span>
-                                        {% elif category.permission_type|lower == "write_access" %}
-                                            <span class="badge bg-success ms-2 badge-pill">
-                                                <i class="bi bi-pencil-fill me-1"></i>Write
-                                            </span>
+                                        {% if not category.locked %}
+                                            {% if category.permission_type|lower == "read_only_access" %}
+                                                <span class="badge bg-info ms-2 badge-pill">
+                                                    <i class="bi bi-book-fill me-1"></i>Read Only
+                                                </span>
+                                            {% elif category.permission_type|lower == "write_access" %}
+                                                <span class="badge bg-success ms-2 badge-pill">
+                                                    <i class="bi bi-pencil-fill me-1"></i>Write
+                                                </span>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 </div>

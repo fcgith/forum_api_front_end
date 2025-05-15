@@ -11,72 +11,98 @@
                 <i class="bi bi-chevron-right text-muted small"></i>
                 <span class="text-primary">Profile</span>
             </div>
-            <h1 class="display-5 fw-bold">User Profile</h1>
+            <h1 class="display-5 fw-bold">
+                <i class="bi bi-person-circle text-primary me-2"></i>User Profile
+            </h1>
+            <p class="lead text-muted">Manage your account and view your profile information.</p>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-primary profile-card">
+                <div class="card-header bg-primary bg-opacity-10">
+                    <h4 class="mb-0"><i class="bi bi-person-badge me-2"></i>Profile</h4>
+                </div>
                 <div class="card-body text-center">
-                    {% if profile.avatar %}
-                    <img src="{{ profile.avatar }}" alt="{{ profile.username }}" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                    {% else %}
-                    <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 150px; height: 150px;">
-                        <i class="bi bi-person-fill text-primary" style="font-size: 4rem;"></i>
+                    <div class="avatar-container mb-3">
+                        {% if profile.avatar %}
+                        <img src="{{ profile.avatar }}" alt="{{ profile.username }}" class="rounded-circle img-fluid profile-avatar" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto profile-avatar" style="width: 150px; height: 150px;">
+                            <i class="bi bi-person-fill text-primary" style="font-size: 4rem;"></i>
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                     <h3 class="card-title">{{ profile.username }}</h3>
                     {% if profile.admin > 0 %}
-                    <span class="badge bg-danger mb-3">Administrator</span>
+                    <span class="badge bg-danger mb-3">
+                        <i class="bi bi-shield-fill-check me-1"></i>Administrator
+                    </span>
                     {% endif %}
-                    <p class="text-muted">Member since {{ profile.creation_date }}</p>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-calendar3 me-1"></i>Member since
+                    </p>
+                    <p class="text-muted">
+                        {{ profile.creation_date }}
+                    </p>
                 </div>
             </div>
         </div>
 
         <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
+            <div class="card shadow-sm border-primary profile-card">
+                <div class="card-header bg-primary bg-opacity-10">
                     <h4 class="mb-0"><i class="bi bi-info-circle me-2"></i>Profile Details</h4>
                 </div>
                 <div class="card-body">
-                    <table class="table">
+                    <table class="table table-hover profile-table">
                         <tbody>
-                            <tr>
-                                <th scope="row" style="width: 30%;">Username</th>
+                            <tr class="profile-table-row">
+                                <th scope="row" style="width: 30%;">
+                                    <i class="bi bi-person-fill me-2 text-primary"></i>Username
+                                </th>
                                 <td>{{ profile.username }}</td>
                             </tr>
-                            <tr>
-                                <th scope="row">User ID</th>
-                                <td>{{ profile.id }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Joined</th>
+                            <tr class="profile-table-row">
+                                <th scope="row">
+                                    <i class="bi bi-calendar-date me-2 text-primary"></i>Joined
+                                </th>
                                 <td>{{ profile.creation_date }}</td>
                             </tr>
-                            <tr>
-                                <th scope="row">Account Type</th>
-                                <td>{% if profile.admin > 0 %}Administrator{% else %}Regular User{% endif %}</td>
+                            <tr class="profile-table-row">
+                                <th scope="row">
+                                    <i class="bi bi-person-badge me-2 text-primary"></i>Account Type
+                                </th>
+                                <td>{% if profile.admin > 0 %}
+                                    <span class="text-danger">
+                                        <i class="bi bi-shield-fill-check me-1"></i>Administrator
+                                    </span>
+                                    {% else %}
+                                    <span class="text-success">
+                                        <i class="bi bi-person-check me-1"></i>Regular User
+                                    </span>
+                                    {% endif %}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="card shadow-sm mt-4">
-                <div class="card-header bg-light">
+            <div class="card shadow-sm border-primary profile-card mt-4">
+                <div class="card-header bg-primary bg-opacity-10">
                     <h4 class="mb-0"><i class="bi bi-gear me-2"></i>Account Actions</h4>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="/user/profile/avatar" class="btn btn-outline-success">
+                        <a href="/user/profile/avatar" class="btn btn-outline-success action-btn">
                             <i class="bi bi-image me-2"></i>Change Avatar
                         </a>
-                        <a href="/" class="btn btn-outline-primary">
+                        <a href="/" class="btn btn-outline-primary action-btn">
                             <i class="bi bi-house-door me-2"></i>Return to Home
                         </a>
-                        <a href="/auth/logout" class="btn btn-outline-danger">
+                        <a href="/auth/logout" class="btn btn-outline-danger action-btn">
                             <i class="bi bi-box-arrow-right me-2"></i>Logout
                         </a>
                     </div>
@@ -85,4 +111,52 @@
         </div>
     </div>
 </div>
+
+<style>
+    .border-primary {
+        border-left: 4px solid #0d6efd;
+    }
+
+    .profile-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .avatar-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .profile-avatar {
+        border: 3px solid #0d6efd;
+        box-shadow: 0 0.5rem 1rem rgba(13, 110, 253, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0.5rem 1.5rem rgba(13, 110, 253, 0.3);
+    }
+
+    .profile-table-row {
+        transition: background-color 0.2s ease;
+    }
+
+    .profile-table-row:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    .action-btn {
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    }
+</style>
 {% endblock %}

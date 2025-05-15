@@ -61,3 +61,21 @@ async def update_category_lock(
     Lock category.
     """
     return await AdminService.update_category_lock(request, category_id)
+
+@router.get("/lock-topic", response_class=HTMLResponse)
+async def topic_lock_form(request: Request):
+    """
+    Form for updating a topics's lock status.
+    """
+    return await AdminService.get_topic_lock_form(request)
+
+@router.post("/lock-topic", response_class=HTMLResponse)
+async def update_topic_lock(
+    request: Request,
+    topic_id: int = Form(...),
+
+):
+    """
+    Lock topic.
+    """
+    return await AdminService.update_topic_lock(request, topic_id)

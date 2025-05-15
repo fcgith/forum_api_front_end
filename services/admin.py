@@ -46,6 +46,12 @@ class AdminService:
                 "icon": "bi-lock-plus",
                 "url": "/admin/lock-category"
             },
+            {
+                "name": "Lock Topic",
+                "description": "Lock topic from the forum.",
+                "icon": "bi-lock-plus",
+                "url": "/admin/lock-topic"
+            },
         ]
 
         data = {
@@ -336,6 +342,76 @@ class AdminService:
             }
             return templates.TemplateResponse(
                 "category_lock.html",
+                data,
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )
+
+    @classmethod
+    async def get_topic_lock_form(cls, request):
+        """
+        Get the topic lock form page.
+        """
+        user_data = await cls.verify_admin(request)
+
+        data = {
+            "request": request,
+            "title": "Lock Topic - Forum API Frontend",
+            "is_authenticated": user_data["is_authenticated"],
+            "admin": user_data["admin"]
+        }
+
+        return templates.TemplateResponse(
+            "topic_lock.html",
+            data,
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+        )
+
+    @classmethod
+    async def update_topic_lock(cls, request, topic_id: int):
+        """
+        Lock a topic.
+        """
+        # Verify that the user is an admin
+        await cls.verify_admin(request)
+
+        # Get the authentication token
+        token = Cookies.get_access_token_from_cookie(request)
+
+        # Make the API request to lock the topic
+        async with httpx.AsyncClient() as client:
+            response = await client.put(
+                f"http://172.245.56.116:8000/topics/{topic_id}/lock?token={token}"
+            )
+
+            user_data = await AuthService.get_user_data_from_cookie(request)
+
+            # Check if the update request was successful
+            if response.status_code != 200:
+                # If not, return the form with an error message
+                data = {
+                    "request": request,
+                    "title": "Lock Topic - Forum API Frontend",
+                    "is_authenticated": user_data["is_authenticated"],
+                    "admin": user_data["admin"],
+                    "message": f"Failed to lock topic: {response.text}"
+                }
+                return templates.TemplateResponse(
+                    "topic_lock.html",
+                    data,
+                    headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+                )
+
+            # If successful, return the form with a success message
+            data = {
+                "request": request,
+                "title": "Lock Topic - Forum API Frontend",
+                "is_authenticated": user_data["is_authenticated"],
+                "admin": user_data["admin"],
+                "message": "Topic successfully locked!",
+                "success": True
+            }
+            return templates.TemplateResponse(
+                "topic_lock.html",
                 data,
                 headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
             )

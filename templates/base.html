@@ -10,12 +10,12 @@
     <style>
         html, body {
             height: 100%;
-            background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
         }
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            background-color: #f8f9fa; /* Added light gray background */
         }
         .content-wrapper {
             flex: 1;
@@ -93,14 +93,8 @@
             transform-origin: top center;
         }
         @keyframes dropdown-animation {
-            0% {
-                opacity: 0;
-                transform: scaleY(0.8);
-            }
-            100% {
-                opacity: 1;
-                transform: scaleY(1);
-            }
+            0% { opacity: 0; transform: scaleY(0.8); }
+            100% { opacity: 1; transform: scaleY(1); }
         }
         .navbar-custom .dropdown-item {
             transition: all 0.2s ease;
@@ -110,7 +104,6 @@
             background-color: rgba(13, 110, 253, 0.1);
             transform: translateX(5px);
         }
-        /* Navbar toggler animation */
         .navbar-custom .navbar-toggler {
             border: none;
             padding: 0.25rem 0.5rem;
@@ -129,12 +122,10 @@
         .navbar-custom .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
             transform: rotate(90deg);
         }
-        /* Search button styling */
-        .navbar-custom .btn-outline-light {
+        .navbar-custom .btn-light { /* Adjusted for new button class */
             transition: all 0.3s ease;
-            border-width: 1px;
         }
-        .navbar-custom .btn-outline-light:hover {
+        .navbar-custom .btn-light:hover {
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             transform: translateY(-1px);
         }
@@ -151,48 +142,47 @@
                 <ul class="navbar-nav mx-auto">
                     {% if is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/">Home</a>
+                            <a class="nav-link" href="/"><i class="bi bi-house-door me-1"></i>Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/user/me">Profile</a>
+                            <a class="nav-link" href="/user/me"><i class="bi bi-person me-1"></i>Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/conversations">Conversations</a>
+                            <a class="nav-link" href="/conversations"><i class="bi bi-chat me-1"></i>Conversations</a>
                         </li>
                         {% if admin %}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Admin
+                                    <i class="bi bi-shield-lock me-1"></i>Admin
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="adminDropdown">
-                                    <li><a class="dropdown-item" href="/admin">Admin Panel</a></li>
+                                    <li><a class="dropdown-item" href="/admin"><i class="bi bi-gear me-2"></i>Admin Panel</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="/admin/add-category">Add Category</a></li>
-                                    <li><a class="dropdown-item" href="/admin/category-hidden-status">Category Hidden Status</a></li>
+                                    <li><a class="dropdown-item" href="/admin/add-category"><i class="bi bi-plus-circle me-2"></i>Add Category</a></li>
+                                    <li><a class="dropdown-item" href="/admin/category-hidden-status"><i class="bi bi-eye-slash me-2"></i>Category Hidden Status</a></li>
                                 </ul>
                             </li>
                         {% endif %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/auth/logout">Logout</a>
+                            <a class="nav-link" href="/auth/logout"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/auth/login">Login</a>
+                            <a class="nav-link" href="/auth/login"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/auth/register">Register</a>
+                            <a class="nav-link" href="/auth/register"><i class="bi bi-person-plus me-1"></i>Register</a>
                         </li>
                     {% endif %}
                 </ul>
                 {% if is_authenticated %}
                 <form class="d-flex" action="/search/1" method="get">
-                    <input class="form-control form-control-sm rounded-pill me-2" type="search" name="search" placeholder="Search..." aria-label="Search" style="max-width: 150px; height: 30px;">
-                    <button class="btn btn-sm btn-outline-light rounded-pill" type="submit">
+                    <input class="form-control form-control-sm rounded-pill me-2" type="search" name="search" placeholder="Search..." aria-label="Search" style="max-width: 200px; height: 30px;">
+                    <button class="btn btn-sm btn-light rounded-pill" type="submit">
                         <i class="bi bi-search"></i>
                     </button>
                 </form>
                 {% else %}
-                <!-- Empty div to balance the navbar for non-logged-in users -->
                 <div style="width: 200px;"></div>
                 {% endif %}
             </div>
@@ -205,7 +195,7 @@
     </div>
     <footer class="bg-dark text-light py-3 mt-5">
         <div class="container-sm mx-auto" style="max-width: 600px;">
-            <p class="text-center text-light mb-0">&copy; 2025 Forum API Frontend. All rights reserved.</p>
+            <p class="text-center text-light mb-0">© 2025 Forum API Frontend. All rights reserved.</p>
         </div>
     </footer>
 
@@ -215,25 +205,15 @@
     <!-- Add active class to current nav link and handle navbar scroll -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get current path
             const path = window.location.pathname;
-
-            // Find nav links
             const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-
-            // Add active class to matching link
             navLinks.forEach(link => {
                 const href = link.getAttribute('href');
-                if (href === path || 
-                    (path.startsWith(href) && href !== '/')) {
+                if (href === path || (path.startsWith(href) && href !== '/')) {
                     link.classList.add('active');
                 }
             });
-
-            // Navbar scroll effect
             const navbar = document.querySelector('.navbar-custom');
-
-            // Add scrolled class on scroll
             window.addEventListener('scroll', function() {
                 if (window.scrollY > 50) {
                     navbar.classList.add('scrolled');

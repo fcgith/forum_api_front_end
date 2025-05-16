@@ -13,20 +13,20 @@
                 <i class="bi bi-chevron-right text-muted small"></i>
                 <span class="text-primary">Change Avatar</span>
             </div>
-            <h1 class="display-5 fw-bold">Change Avatar</h1>
+            <h1 class="display-5 fw-bold"><i class="bi bi-image text-primary me-2 animate-icon"></i>Change Avatar</h1>
             <p class="lead">Update your profile picture by providing an image URL.</p>
         </div>
     </div>
 
     <!-- Tips Card -->
-    <div class="card mb-4 border-primary">
+    <div class="card border-0 rounded-4 admin-card mb-4">
         <div class="card-header bg-primary bg-opacity-10">
             <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-info-circle fs-4"></i>
+                <i class="bi bi-info-circle fs-4 text-primary"></i>
                 <span class="fw-bold">Tips for Avatar Images</span>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body p-4 p-md-5">
             <ul class="mb-0">
                 <li>Use a square image for best results</li>
                 <li>Make sure the image URL is publicly accessible</li>
@@ -36,22 +36,25 @@
         </div>
     </div>
 
-    <!-- Avatar Update Form -->
-    <form method="post" action="/user/profile/avatar">
-        <div class="mb-3">
-            <label for="avatar_link" class="form-label">Image URL</label>
-            <input type="url" class="form-control" id="avatar_link" name="avatar_link" placeholder="https://example.com/image.jpg" required>
-            <div class="form-text">Paste a direct link to an image file (JPG, PNG, GIF, etc.)</div>
+    <div class="card border-0 rounded-4 admin-card mb-4">
+        <div class="card-body p-4 p-md-5">
+            <form method="post" action="/user/profile/avatar">
+                <div class="mb-3">
+                    <label for="avatar_link" class="form-label">Image URL</label>
+                    <input type="url" class="form-control" id="avatar_link" name="avatar_link" placeholder="https://example.com/image.jpg" required>
+                    <div class="form-text">Paste a direct link to an image file (JPG, PNG, GIF, etc.)</div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="/user/me" class="btn btn-secondary rounded-pill hover-box">
+                        <i class="bi bi-arrow-left me-2 hover-arrow"></i> Back to Profile
+                    </a>
+                    <button type="submit" class="btn btn-primary rounded-pill hover-box">
+                        <i class="bi bi-cloud-upload me-2 hover-arrow"></i> Update Avatar
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="d-flex justify-content-between">
-            <a href="/user/me" class="btn btn-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Back to Profile
-            </a>
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-cloud-upload me-1"></i> Update Avatar
-            </button>
-        </div>
-    </form>
+    </div>
 
     {% if message %}
         {% if success %}
@@ -67,8 +70,89 @@
 </div>
 
 <style>
-    .card.border-primary {
-        border-left: 4px solid #0d6efd;
+    /* Admin card styling */
+    .admin-card {
+        background-color: #fefefe;
+        animation: fadeIn 0.5s ease-in-out;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+    .admin-card:hover {
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25), 0 15px 25px rgba(0, 0, 0, 0.2);
+        transform: translateY(-10px);
+    }
+
+    /* Card header styling */
+    .card-header {
+        background-color: rgba(13, 110, 253, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    /* Table styling (not used here but included for consistency) */
+    .table {
+        background-color: #f8f9fa;
+    }
+    .table tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    /* Button styling (for outline buttons, included for completeness) */
+    .btn-outline-success, .btn-outline-primary, .btn-outline-danger {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-success:hover, .btn-outline-primary:hover, .btn-outline-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Badge styling (not used here) */
+    .badge {
+        transition: all 0.3s ease;
+    }
+    .badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Avatar styling (not used here) */
+    .rounded-circle {
+        border: 2px solid #0d6efd;
+        transition: all 0.3s ease;
+    }
+    .rounded-circle:hover {
+        transform: scale(1.05);
+    }
+
+    /* Icon animations */
+    .animate-icon {
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    .hover-box:hover .hover-arrow {
+        opacity: 1;
+        transform: translateX(3px);
+        transition: all 0.3s ease;
+    }
+    .hover-arrow {
+        transition: all 0.3s ease;
+        opacity: 0.3;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .btn-outline-success, .btn-outline-primary, .btn-outline-danger {
+            width: 100%;
+            padding: 0.75rem;
+        }
+        .card {
+            margin-bottom: 1.5rem;
+        }
     }
 </style>
 {% endblock %}

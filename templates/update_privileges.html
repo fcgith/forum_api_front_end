@@ -30,7 +30,7 @@
                             <select class="form-select form-select-lg rounded-3" id="category_id" name="category_id" required>
                                 <option value="" selected disabled>Choose a category...</option>
                                 {% for category in categories %}
-                                    <option value="{{ category.id }}">{{ category.name }} (ID: {{ category.id }})</option>
+                                    <option value="{{ category.id }}">{{ category.name }} (ID: {{ category.id }}{% if category.hidden %} | Hidden{% endif %})</option>
                                 {% endfor %}
                             </select>
                         </div>

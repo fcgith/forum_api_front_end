@@ -1,4 +1,5 @@
 import httpx
+from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
 
 from services.cookies import Cookies
@@ -16,14 +17,18 @@ class AuthService:
         data = {"is_authenticated": False, "admin": False}
         if is_authenticated:
             async with httpx.AsyncClient() as client:
-                headers = {"Cache-Control": "no-cache"}
-                response = await client.get(f"http://172.245.56.116:8000/auth/?token={access_token}", headers=headers)
+                headers = {"Cache-Control": "no-cache",
+                           "Authorization": access_token}
+                response = await client.get(f"http://172.245.56.116:8000/auth/",
+                                            headers=headers,)
 
                 if response.status_code == 200:
                     data = response.json()
                     data["is_authenticated"] = True
                     data["admin"] = True if data["admin"] > 0 else False
-                return data
+                    return data
+                else:
+                    raise HTTPException(status_code=response.status_code, detail="Error fetching user data")
         return data
 
     @classmethod

@@ -345,6 +345,8 @@ class TopicService:
                 return templates.TemplateResponse("403.html", {"request": request}, status_code=403)
 
             if response.status_code != 200:
+                print(response.status_code)
+                print(response.text)
                 return templates.TemplateResponse("500.html", {"request": request}, status_code=500)
 
             # Redirect back to the topic page with anchor to the voted reply

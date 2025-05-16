@@ -448,9 +448,9 @@ class AdminService:
 
         # Make the API request to update user permissions
         async with httpx.AsyncClient() as client:
-            headers = {"Content-Type": "application/json"}
+            headers = {"Content-Type": "application/json", "Authorization": token}
             response = await client.put(
-                f"http://172.245.56.116:8000/categories/update-user-permissions?token={token}",
+                f"http://172.245.56.116:8000/categories/user-permissions",
                 json={"category_id": category_id, "user_id": user_id, "permission": permissions},
                 headers=headers
             )

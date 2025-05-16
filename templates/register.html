@@ -11,13 +11,15 @@
                     <i class="bi bi-chevron-right text-muted small"></i>
                     <span class="text-primary">Register</span>
                 </div>
-                <h1 class="display-5 fw-bold">Create an Account</h1>
+                <h1 class="display-5 fw-bold">
+                    <i class="bi bi-person-plus text-primary me-2 animate-icon"></i>Create an Account
+                </h1>
                 <p class="lead">Join our community and start participating in discussions.</p>
             </div>
         </div>
 
         <!-- Registration Tips -->
-        <div class="card mb-4 border-primary">
+        <div class="card mb-4 admin-card">
             <div class="card-header bg-primary bg-opacity-10">
                 <div class="d-flex align-items-center gap-2">
                     <i class="bi bi-info-circle fs-4"></i>
@@ -33,8 +35,8 @@
         </div>
 
         <!-- Registration Form -->
-        <div class="card mb-4">
-            <div class="card-header bg-light">
+        <div class="card mb-4 admin-card">
+            <div class="card-header bg-primary bg-opacity-10">
                 <div class="d-flex align-items-center gap-2">
                     <i class="bi bi-person-plus fs-4"></i>
                     <span class="fw-bold">Account Information</span>
@@ -67,19 +69,15 @@
                         <input type="date" class="form-control" id="birthdate" name="birthdate" required>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <a href="/auth/login" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-1"></i> Back to Login
+                        <a href="/auth/login" class="btn btn-outline-secondary rounded-pill hover-box">
+                            <i class="bi bi-arrow-left me-1 hover-arrow"></i> Back to Login
                         </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle me-1"></i> Create Account
+                        <button type="submit" class="btn btn-primary rounded-pill hover-box">
+                            <i class="bi bi-check-circle me-1 hover-arrow"></i> Create Account
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-        <div class="text-center">
-            Already have an account? <a href="/auth/login">Login here</a>.
+                </div>
         </div>
 
         {% if message %}
@@ -90,26 +88,51 @@
     </div>
 
     <style>
-        .card.border-primary {
-            border-left: 4px solid #0d6efd;
-        }
-        .card.border-primary {
-            border-left: 4px solid #0d6efd;
-        }
-
-        /* Smooth transitions for form input validation */
+        /* Smooth transitions for form inputs */
         .form-control {
             transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
         }
-
-        /* Ensure Bootstrap validation classes have smooth transitions */
         .form-control.is-valid,
         .form-control.is-invalid {
             transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
         }
+
+        /* Styles from previous pages */
+        .admin-card {
+            background-color: #fefefe;
+            animation: fadeIn 0.5s ease-in-out;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        .admin-card:hover {
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25), 0 15px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-10px);
+        }
+        .hover-box:hover .hover-arrow {
+            opacity: 1;
+            transform: translateX(3px);
+            transition: all 0.3s ease;
+        }
+        .hover-arrow {
+            transition: all 0.3s ease;
+            opacity: 0.3;
+        }
+        .animate-icon {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
-    {% endblock %}
-    {% block js %}
+{% endblock %}
+
+{% block js %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const usernameInput = document.getElementById('username');
@@ -118,18 +141,14 @@
             // Function to validate and style input
             function validateInput(input, minLength, maxLength) {
                 const valueLength = input.value.length;
-                // Remove both classes first to reset state
                 input.classList.remove('is-valid', 'is-invalid');
-
                 if (maxLength) {
-                    // Username: check both min and max length
                     if (valueLength >= minLength && valueLength <= maxLength) {
                         input.classList.add('is-valid');
                     } else if (valueLength > 0) {
                         input.classList.add('is-invalid');
                     }
                 } else {
-                    // Password: check only min length
                     if (valueLength >= minLength) {
                         input.classList.add('is-valid');
                     } else if (valueLength > 0) {
@@ -138,7 +157,6 @@
                 }
             }
 
-            // Add input event listeners
             usernameInput.addEventListener('input', function() {
                 validateInput(usernameInput, 6, 16);
             });

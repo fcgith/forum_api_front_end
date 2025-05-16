@@ -36,7 +36,7 @@ class UserService:
         async with httpx.AsyncClient() as client:
             headers = {"Cache-Control": "no-cache"}
             response = await client.get(
-                f"http://172.245.56.116:8000/users/get-by-username/{username}?token={token}",
+                f"http://172.245.56.116:8000/users/search/{username}?token={token}",
                 headers=headers
             )
 

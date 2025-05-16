@@ -187,3 +187,34 @@ class ConversationsService:
                 # Handle connection errors
                 error_message = f"Error connecting to API: {str(e)}"
                 return await cls.get_conversation_messages(request, conversation_user_id, error_message=error_message)
+
+    @classmethod
+    async def start_new_message_form(cls, request, message=None):
+        data = await AuthService.get_user_data_from_cookie(request)
+        if not data["is_authenticated"]:
+            return RedirectResponse(url="/auth/login")
+
+        data["request"] = request
+        data["title"] = "New Conversation - Forum API Frontend"
+        data["message"] = message
+
+        return templates.TemplateResponse(
+            "conversations/new_conversation_form.html",
+            data,
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+        )
+
+    @classmethod
+    async def start_new_message_post(cls, request, username):
+        token = Cookies.get_access_token_from_cookie(request)
+        data = await AuthService.get_user_data_from_cookie(request)
+        if not data["is_authenticated"]:
+            return RedirectResponse(url="/auth/login")
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"http://172.245.56.116:8000/users/search/{username}?token={token}")
+            if response.status_code == 200:
+                user_data = response.json()
+                return RedirectResponse(url=f"/conversations/{user_data.get("id")}", status_code=303)
+            message = f"Oops! {response.json().get('detail', 'Unknown error')}"
+            return await cls.start_new_message_form(request, message=message)

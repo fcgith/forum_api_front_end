@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5 fw-bold">
+                <i class="bi bi-chat-square-text-fill text-primary me-2 animate-icon"></i>New Message
+            </h1>
+            <p class="lead">Start a new conversation with a user.</p>
+        </div>
+    </div>
+    <form method="POST" action="/conversations/new">
+        <div class="mb-3">
+            <input type="text" id="username" name="username" class="form-control" placeholder="Enter username..." required>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-send-fill me-2"></i>Send Message
+            </button>
+        </div>
+    </form>
+    {% if message %}
+    <div class="alert alert-danger text-center mt-3">
+        <i class="bi bi-exclamation-triangle me-2"></i> {{ message | safe }}
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .form-control {
+        padding: 0.75rem 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: #6c757d;
+        opacity: 1;
+    }
+
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border-radius: 0.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    }
+
+    .animate-icon {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+</style>
+{% endblock %}

@@ -28,7 +28,8 @@ class AuthService:
                     data["admin"] = True if data["admin"] > 0 else False
                     return data
                 else:
-                    raise HTTPException(status_code=response.status_code, detail="Error fetching user data")
+                    raise HTTPException(status_code=response.status_code, detail="Error fetching user data: "\
+                                        + response.text)
         return data
 
     @classmethod

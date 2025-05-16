@@ -533,8 +533,8 @@ class AdminService:
             categories = categories_response.json()
             # Get privileged users for the selected category
             response = await client.get(
-                f"http://172.245.56.116:8000/categories/{category_id}/get-users-with-permissions?token={token}",
-                headers={"Cache-Control": "no-cache"}
+                f"http://172.245.56.116:8000/categories/{category_id}/privileged-users",
+                headers={"Cache-Control": "no-cache", "Authorization": token}
             )
             privileged_users = []
             if response.status_code == 200:

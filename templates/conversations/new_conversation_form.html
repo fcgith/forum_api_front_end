@@ -14,20 +14,20 @@
             <h1 class="display-5 fw-bold">
                 <i class="bi bi-chat-square-text-fill text-primary me-2 animate-icon"></i>New Message
             </h1>
-            <p class="lead text-muted">Start a new conversation with a user in our community.</p>
+            <p class="lead">Start a new conversation with a user in our community.</p>
         </div>
     </div>
 
     <!-- Tips Card -->
-    <div class="card mb-4 admin-card border-0 rounded-4 hover-box">
+    <div class="card border-0 rounded-4 admin-card mb-4">
         <div class="card-header bg-primary bg-opacity-10">
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-info-circle fs-4 text-primary"></i>
                 <span class="fw-bold">Tips for Sending Messages</span>
             </div>
         </div>
-        <div class="card-body">
-            <ul class="mb-0 text-muted">
+        <div class="card-body p-4 p-md-5">
+            <ul class="mb-0">
                 <li>Enter the exact username of the recipient</li>
                 <li>Ensure the user is active in the community</li>
                 <li>Keep your message concise and respectful</li>
@@ -37,31 +37,35 @@
     </div>
 
     <!-- Message Form -->
-    <form method="POST" action="/conversations/new">
-        <div class="mb-4">
-            <label for="usernameInput" class="form-label fw-bold">Recipient Username</label>
-            <div class="input-group">
-                <span class="input-group-text bg-light border-end-0">
-                    <i class="bi bi-person-circle text-primary"></i>
-                </span>
-                <input type="text" class="form-control bg-light border-start-0" id="usernameInput" name="username" placeholder="Enter username..." required>
-            </div>
-            <div class="form-text">Enter the username of the user you want to message.</div>
+    <div class="card border-0 rounded-4 admin-card mb-4">
+        <div class="card-body p-4 p-md-5">
+            <form method="POST" action="/conversations/new">
+                <div class="mb-3">
+                    <label for="usernameInput" class="form-label fw-bold">Recipient Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-person-circle text-primary"></i>
+                        </span>
+                        <input type="text" class="form-control bg-light border-start-0" id="usernameInput" name="username" placeholder="Enter username..." required>
+                    </div>
+                    <div class="form-text">Enter the username of the user you want to message.</div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary rounded-pill hover-box">
+                        <i class="bi bi-send-fill me-1 hover-arrow"></i> Send Message
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary rounded-pill hover-box">
-                <i class="bi bi-send-fill me-1 hover-arrow"></i> Send Message
-            </button>
-        </div>
-    </form>
+    </div>
 </div>
 
 <style>
-    /* Styles for admin-card */
+    /* Admin card styling */
     .admin-card {
         background-color: #fefefe;
         animation: fadeIn 0.5s ease-in-out;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.075);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.15);
         transition: all 0.3s ease;
     }
     .admin-card:hover {
@@ -69,7 +73,58 @@
         transform: translateY(-10px);
     }
 
-    /* Button hover effects */
+    /* Card header styling */
+    .card-header {
+        background-color: rgba(13, 110, 253, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    /* Table styling (not used here but included for consistency) */
+    .table {
+        background-color: #f8f9fa;
+    }
+    .table tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    /* Button styling (for outline buttons, included for completeness) */
+    .btn-outline-success, .btn-outline-primary, .btn-outline-danger {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-success:hover, .btn-outline-primary:hover, .btn-outline-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Badge styling (not used here) */
+    .badge {
+        transition: all 0.3s ease;
+    }
+    .badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Avatar styling (not used here) */
+    .rounded-circle {
+        border: 2px solid #0d6efd;
+        transition: all 0.3s ease;
+    }
+    .rounded-circle:hover {
+        transform: scale(1.05);
+    }
+
+    /* Icon animations */
+    .animate-icon {
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
     .hover-box:hover .hover-arrow {
         opacity: 1;
         transform: translateX(3px);
@@ -80,25 +135,15 @@
         opacity: 0.3;
     }
 
-    /* Header icon animation */
-    .animate-icon {
-        animation: pulse 2s infinite;
-    }
-
-    /* Form control transitions */
-    .form-control {
-        transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    /* Keyframes */
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .btn-outline-success, .btn-outline-primary, .btn-outline-danger {
+            width: 100%;
+            padding: 0.75rem;
+        }
+        .card {
+            margin-bottom: 1.5rem;
+        }
     }
 </style>
 {% endblock %}

@@ -78,19 +78,20 @@ class SearchService:
             response_data = response.json()
             topics = response_data.get("topics", [])
             # API returns the total number of pages
-            pages = response_data.get("pages", 1)
-
+            pages = response_data.get("pages")
+            if pages == 0:
+                pages = 1
+            else:
+                pages += 1
             # Prepare data for the template
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "Search Results - Forum API Frontend",
                 "topics": topics,
                 "search": search,
                 "sort": sort,
                 "current_page": page,
-                "pages": pages,
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": True if user_data.get("admin") > 0 else False
+                "pages": pages
             }
 
             return templates.TemplateResponse(

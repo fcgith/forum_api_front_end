@@ -34,9 +34,9 @@ class UserService:
 
         # Make the API call to get the user profile data
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
             response = await client.get(
-                f"http://172.245.56.116:8000/users/search/{username}?token={token}",
+                f"http://172.245.56.116:8000/users/search/{username}",
                 headers=headers
             )
 
@@ -205,8 +205,8 @@ class UserService:
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.put(
-                    f"http://172.245.56.116:8000/users/avatar/?token={token}&link={avatar_link}",
-                    headers={"Cache-Control": "no-cache"}
+                    f"http://172.245.56.116:8000/users/avatar/?link={avatar_link}",
+                    headers={"Cache-Control": "no-cache", "Authorization": token}
                 )
 
                 # Prepare the template data based on the response

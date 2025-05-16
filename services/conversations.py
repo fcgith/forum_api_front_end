@@ -199,7 +199,8 @@ class ConversationsService:
             return RedirectResponse(url="/auth/login")
 
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"http://172.245.56.116:8000/users/search/{username}?token={token}")
+            response = await client.get(f"http://172.245.56.116:8000/users/search/{username}",
+                                        headers={"Cache-Control": "no-cache", "Authorization": token})
             if response.status_code == 200:
                 user_data = response.json()
                 return RedirectResponse(url=f"/conversations/{user_data.get("id")}", status_code=303)

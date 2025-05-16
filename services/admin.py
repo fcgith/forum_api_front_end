@@ -31,42 +31,42 @@ class AdminService:
             {
                 "name": "Add Category",
                 "description": "Add category to the forum.",
-                "icon": "bi-folder-plus",
+                "icon": "bi-plus-circle",
                 "url": "/admin/add-category"
             },
             {
                 "name": "Category Hidden Status",
                 "description": "Update categories' hidden status.",
-                "icon": "bi-folder",
+                "icon": "bi-eye-slash",
                 "url": "/admin/category-hidden-status"
             },
             {
                 "name": "Lock Category",
                 "description": "Lock category from the forum.",
-                "icon": "bi-lock",
+                "icon": "bi-shield-lock",
                 "url": "/admin/lock-category"
             },
             {
                 "name": "Lock Topic",
                 "description": "Lock topic from the forum.",
-                "icon": "bi-lock-fill",
+                "icon": "bi-lock",
                 "url": "/admin/lock-topic"
             },
             {
                 "name": "Update User Category Privileges",
                 "description": "Set the access level of users to a category.",
-                "icon": "bi-people",
+                "icon": "bi-person-gear",
                 "url": "/admin/update-privileges"
             },
             {
-                "name": "View Privilege Users",
+                "name": "View Privileged Users",
                 "description": "View users with access to a private category",
-                "icon": "bi-people",
+                "icon": "bi-person-check",
                 "url": "/admin/view-privilege-users"
             }
         ]
 
-        data = {
+        data = user_data | {
             "request": request,
             "title": "Admin Panel - Forum API Frontend",
             "admin_features": admin_features,
@@ -87,11 +87,9 @@ class AdminService:
         """
         user_data = await cls.verify_admin(request)
 
-        data = {
+        data = user_data | {
             "request": request,
             "title": "Add Category - Forum API Frontend",
-            "is_authenticated": user_data["is_authenticated"],
-            "admin": user_data["admin"]
         }
 
         return templates.TemplateResponse(
@@ -106,7 +104,7 @@ class AdminService:
         Add a new category to the forum.
         """
         # Verify that the user is an admin
-        await cls.verify_admin(request)
+        user_data = await cls.verify_admin(request)
 
         # Get the authentication token
         token = Cookies.get_access_token_from_cookie(request)
@@ -122,13 +120,9 @@ class AdminService:
 
             # Check if the request was successful
             if response.status_code != 200:
-                # If not, return the form with an error message
-                user_data = await AuthService.get_user_data_from_cookie(request)
-                data = {
+                data = user_data | {
                     "request": request,
                     "title": "Add Category - Forum API Frontend",
-                    "is_authenticated": user_data["is_authenticated"],
-                    "admin": user_data["admin"],
                     "message": f"Failed to add category: {response.text}"
                 }
                 return templates.TemplateResponse(
@@ -137,14 +131,10 @@ class AdminService:
                     headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
                 )
 
-            # If successful, redirect back to the add-category page with a success message
-            from fastapi.responses import RedirectResponse
             user_data = await AuthService.get_user_data_from_cookie(request)
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "Add Category - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "message": "Category successfully created!",
                 "success": True
             }
@@ -177,11 +167,9 @@ class AdminService:
 
             categories = response.json()
 
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "Category Hidden Status - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "categories": categories
             }
 
@@ -229,11 +217,9 @@ class AdminService:
             # Check if the update request was successful
             if response.status_code != 200:
                 # If not, return the form with an error message
-                data = {
+                data = user_data | {
                     "request": request,
                     "title": "Category Hidden Status - Forum API Frontend",
-                    "is_authenticated": user_data["is_authenticated"],
-                    "admin": user_data["admin"],
                     "categories": categories,
                     "message": f"Failed to update category hidden status: {response.text}"
                 }
@@ -244,11 +230,9 @@ class AdminService:
                 )
 
             # If successful, return the form with a success message
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "Category Hidden Status - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "categories": categories,
                 "message": "Category hidden status successfully updated!",
                 "success": True
@@ -282,11 +266,9 @@ class AdminService:
 
             categories = response.json()
 
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "Lock Category - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "categories": categories
             }
 
@@ -328,11 +310,9 @@ class AdminService:
             # Check if the update request was successful
             if response.status_code != 200:
                 # If not, return the form with an error message
-                data = {
+                data = user_data | {
                     "request": request,
                     "title": "Lock Category - Forum API Frontend",
-                    "is_authenticated": user_data["is_authenticated"],
-                    "admin": user_data["admin"],
                     "categories": categories,
                     "message": f"Failed to lock category: {response.text}"
                 }
@@ -343,11 +323,9 @@ class AdminService:
                 )
 
             # If successful, return the form with a success message
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "Lock Category - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "categories": categories,
                 "message": "Category successfully locked!",
                 "success": True
@@ -365,11 +343,9 @@ class AdminService:
         """
         user_data = await cls.verify_admin(request)
 
-        data = {
+        data = user_data | {
             "request": request,
             "title": "Lock Topic - Forum API Frontend",
-            "is_authenticated": user_data["is_authenticated"],
-            "admin": user_data["admin"]
         }
 
         return templates.TemplateResponse(
@@ -400,11 +376,9 @@ class AdminService:
             # Check if the update request was successful
             if response.status_code != 200:
                 # If not, return the form with an error message
-                data = {
+                data = user_data | {
                     "request": request,
                     "title": "Lock Topic - Forum API Frontend",
-                    "is_authenticated": user_data["is_authenticated"],
-                    "admin": user_data["admin"],
                     "message": f"Failed to lock topic: {response.text}"
                 }
                 return templates.TemplateResponse(
@@ -414,11 +388,9 @@ class AdminService:
                 )
 
             # If successful, return the form with a success message
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "Lock Topic - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "message": "Topic successfully locked!",
                 "success": True
             }
@@ -427,6 +399,7 @@ class AdminService:
                 data,
                 headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
             )
+
     @classmethod
     async def get_update_privileges_form(cls, request):
         """
@@ -450,11 +423,9 @@ class AdminService:
 
             categories = response.json()
 
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "Update User Category Privileges - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "categories": categories
             }
 
@@ -499,11 +470,9 @@ class AdminService:
             # Check if the update request was successful
             if response.status_code != 200:
                 # If not, return the form with an error message
-                data = {
+                data = user_data | {
                     "request": request,
                     "title": "Update User Category Privileges - Forum API Frontend",
-                    "is_authenticated": user_data["is_authenticated"],
-                    "admin": user_data["admin"],
                     "categories": categories,
                     "message": f"Failed to update user permissions: {response.text}"
                 }
@@ -514,11 +483,9 @@ class AdminService:
                 )
 
             # If successful, return the form with a success message
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "Update User Category Privileges - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "categories": categories,
                 "message": "User permissions successfully updated!",
                 "success": True
@@ -540,11 +507,9 @@ class AdminService:
             if response.status_code != 200:
                 raise not_authorized
             categories = response.json()
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "View Privileged Users - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "categories": categories
             }
             return templates.TemplateResponse(
@@ -583,11 +548,9 @@ class AdminService:
             }
             for entry in privileged_users:
                 entry["permission_text"] = permission_map.get(entry["permission"], str(entry["permission"]))
-            data = {
+            data = user_data | {
                 "request": request,
                 "title": "View Privileged Users - Forum API Frontend",
-                "is_authenticated": user_data["is_authenticated"],
-                "admin": user_data["admin"],
                 "categories": categories,
                 "selected_category_id": category_id,
                 "privileged_users": privileged_users

@@ -49,7 +49,8 @@ class UserService:
             profile_data = response.json()
 
             # Prepare the data for the template
-            template_data = {
+            template_data = user_data
+            template_data = template_data | {
                 "request": request,
                 "title": f"Profile - {username}",
                 "profile": profile_data,
@@ -112,7 +113,8 @@ class UserService:
             is_own_profile = user_data.get("is_authenticated") and "id" in user_data and user_data.get("id") == profile_data.get("id")
 
             # Prepare the data for the template
-            template_data = {
+            template_data = user_data
+            template_data = template_data | {
                 "request": request,
                 "title": f"User Profile - {profile_data.get('username', 'Unknown')}",
                 "profile": profile_data,
@@ -143,7 +145,8 @@ class UserService:
         user_data = await AuthService.verify_logged_in(request)
 
         # Prepare the data for the template
-        template_data = {
+        template_data = user_data
+        template_data = template_data | {
             "request": request,
             "title": "Change Avatar",
             "is_authenticated": True,
@@ -182,7 +185,7 @@ class UserService:
 
         if not avatar_link:
             # Prepare the data for the template with error message
-            template_data = {
+            template_data = user_data | {
                 "request": request,
                 "title": "Change Avatar",
                 "is_authenticated": True,
@@ -207,7 +210,7 @@ class UserService:
                 )
 
                 # Prepare the template data based on the response
-                template_data = {
+                template_data = user_data | {
                     "request": request,
                     "title": "Change Avatar",
                     "is_authenticated": True,
@@ -237,7 +240,7 @@ class UserService:
 
             except httpx.RequestError as e:
                 # Handle connection errors
-                template_data = {
+                template_data = await AuthService.get_user_data_from_cookie(request) | {
                     "request": request,
                     "title": "Change Avatar",
                     "is_authenticated": True,

@@ -18,7 +18,8 @@ class MainService:
         async with httpx.AsyncClient() as client:
             headers = {"Cache-Control": "no-cache"}
             response = await client.get(f"{api_url}{token}", headers=headers)
-            data = {"is_authenticated": True, "admin": True if user_data["admin"] > 0 else False}
+            data = user_data
+            data["admin"] = True if user_data["admin"] > 0 else False
             if response.status_code == 200:
                 all_categories = response.json()
 
@@ -26,7 +27,7 @@ class MainService:
                 visible_categories = []
                 for category in all_categories:
                     # Check permission for this category
-                    if user_data["admin"] > 0:
+                    if data["admin"]:
                         permission_type = "write_access"
                     else:
                         permission_type = await PermissionService.check_category_permission(request, category["id"])

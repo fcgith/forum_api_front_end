@@ -1,147 +1,160 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid px-4 py-5">
-    <!-- Breadcrumb and Header -->
-    <div class="row mb-5">
-        <div class="col">
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <a href="/" class="text-secondary text-decoration-none hover-text">
-                    <i class="bi bi-house-door fs-5"></i>
-                </a>
-                <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
-                <a href="/admin" class="text-secondary text-decoration-none hover-text">Admin Panel</a>
-                <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
-                <span class="text-primary fw-semibold">Update User Category Privileges</span>
+    <div class="container-fluid px-4 py-5">
+        <!-- Breadcrumb and Header -->
+        <div class="row mb-5">
+            <div class="col">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <a href="/" class="text-secondary text-decoration-none hover-text">
+                        <i class="bi bi-house-door fs-5"></i>
+                    </a>
+                    <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
+                    <a href="/admin" class="text-secondary text-decoration-none hover-text">Admin Panel</a>
+                    <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
+                    <span class="text-primary fw-semibold">Update User Category Privileges</span>
+                </div>
+                <h1 class="display-4 fw-bold text-dark"><i class="bi bi-people me-2"></i>Update User Category Privileges</h1>
+                <p class="lead text-muted">Set access levels for users to categories.</p>
             </div>
-            <h1 class="display-4 fw-bold text-dark"><i class="bi bi-people me-2"></i>Update User Category Privileges</h1>
-            <p class="lead text-muted">Set access levels for users to categories.</p>
         </div>
-    </div>
 
-    <!-- Form Card -->
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm rounded-3 form-card">
-                <div class="card-body p-4 p-md-5">
-                    <form method="post" action="/admin/update-privileges">
-                        <div class="mb-4">
-                            <label for="category_id" class="form-label fw-semibold text-dark">Select Category</label>
-                            <select class="form-select form-select-lg rounded-3" id="category_id" name="category_id" required>
-                                <option value="" selected disabled>Choose a category...</option>
-                                {% for category in categories %}
-                                    <option value="{{ category.id }}">{{ category.name }} (ID:{{ category.id }}{% if category.hidden %} | Hidden{% endif %}{% if category.locked %} | Locked{% endif %})</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="user_id" class="form-label fw-semibold text-dark">User ID</label>
-                            <input type="number" class="form-control form-control-lg rounded-3" id="user_id" name="user_id" required min="1" placeholder="Enter user ID">
-                            <div class="form-text text-muted">Enter the numeric ID of the user.</div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="permissions" class="form-label fw-semibold text-dark">Permission Level</label>
-                            <select class="form-select form-select-lg rounded-3" id="permissions" name="permissions" required>
-                                <option value="" selected disabled>Select permission level...</option>
-                                <option value="0">No Access</option>
-                                <option value="1">Normal Access</option>
-                                <option value="2">Read-Only Access</option>
-                                <option value="3">Write Access</option>
-                            </select>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="/admin" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
-                            <button type="submit" class="btn btn-primary rounded-pill px-4">Update Privileges</button>
-                        </div>
-                    </form>
+        <!-- Form Card -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-3 form-card">
+                    <div class="card-body p-4 p-md-5">
+                        <form method="post" action="/admin/update-privileges">
+                            <div class="mb-4">
+                                <label for="category_id" class="form-label fw-semibold text-dark">Select Category</label>
+                                <select class="form-select form-select-lg rounded-3" id="category_id" name="category_id" required>
+                                    <option value="" selected disabled>Choose a category...</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.name }} (ID:{{ category.id }}{% if category.hidden %} | Hidden{% endif %}{% if category.locked %} | Locked{% endif %})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label for="user_id" class="form-label fw-semibold text-dark">User ID</label>
+                                <input type="number" class="form-control form-control-lg rounded-3" id="user_id" name="user_id" required min="1" placeholder="Enter user ID">
+                                <div class="form-text text-muted">Enter the numeric ID of the user.</div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="permissions" class="form-label fw-semibold text-dark">Permission Level</label>
+                                <select class="form-select form-select-lg rounded-3" id="permissions" name="permissions" required>
+                                    <option value="" selected disabled>Select permission level...</option>
+                                    <option value="0">No Access</option>
+                                    <option value="1">Normal Access</option>
+                                    <option value="2">Read-Only Access</option>
+                                    <option value="3">Write Access</option>
+                                </select>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="/admin" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+                                <button type="submit" class="btn btn-primary rounded-pill px-4">Update Privileges</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Alerts -->
-    {% if message %}
-    <div class="row mt-4 justify-content-center">
-        <div class="col-lg-8">
-            {% if success %}
-            <div class="alert alert-success d-flex align-items-center rounded-3 shadow-sm fade-in" role="alert">
-                <i class="bi bi-check-circle-fill me-3 fs-5 text-success"></i>
-                <span>{{ message | safe }}</span>
+        <!-- Alerts -->
+        {% if message %}
+        <div class="row mt-4 justify-content-center">
+            <div class="col-lg-8">
+                {% if success %}
+                <div class="alert alert-success d-flex align-items-center rounded-3 shadow-sm fade-in" role="alert">
+                    <i class="bi bi-check-circle-fill me-3 fs-5 text-success"></i>
+                    <span>{{ message | safe }}</span>
+                </div>
+                {% else %}
+                <div class="alert alert-danger d-flex align-items-center rounded-3 shadow-sm fade-in" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-3 fs-5 text-danger"></i>
+                    <span>{{ message | safe }}</span>
+                </div>
+                {% endif %}
             </div>
-            {% else %}
-            <div class="alert alert-danger d-flex align-items-center rounded-3 shadow-sm fade-in" role="alert">
-                <i class="bi bi-exclamation-circle-fill me-3 fs-5 text-danger"></i>
-                <span>{{ message | safe }}</span>
-            </div>
-            {% endif %}
         </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
 
-<style>
-    /* Hover effects for breadcrumb links */
-    .hover-text:hover {
-        color: #0d6efd !important;
-        transition: color 0.2s ease;
-    }
-
-    /* Card styling */
-    .form-card {
-        background-color: #fff;
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    /* Input and select focus states */
-    .form-control:focus, .form-select:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    /* Button hover effects */
-    .btn-primary:hover {
-        background-color: #005cbf;
-        border-color: #005cbf;
-        transform: translateY(-2px);
-        transition: all 0.2s ease;
-    }
-
-    .btn-outline-secondary:hover {
-        background-color: #f8f9fa;
-        transform: translateY(-2px);
-        transition: all 0.2s ease;
-    }
-
-    /* Alert animation */
-    .fade-in {
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    /* Fade-in animation */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
+    <style>
+        /* Hover effects for breadcrumb links */
+        .hover-text:hover {
+            color: #0d6efd !important;
+            transition: color 0.2s ease;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
+        /* Card styling */
         .form-card {
-            padding: 1.5rem;
+            background-color: #fff;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        .btn {
-            width: 100%;
-            margin-bottom: 0.5rem;
+
+        /* Input and select focus states */
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
-        .d-flex {
-            flex-direction: column;
+
+        /* Button hover effects */
+        .btn-primary:hover {
+            background-color: #005cbf;
+            border-color: #005cbf;
+            transform: translateY(-2px);
+            transition: all 0.2s ease;
         }
-    }
-</style>
+
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            transition: all 0.2s ease;
+        }
+
+        /* Alert animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-card {
+                padding: 1.5rem;
+            }
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .d-flex {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+{% block js %}
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Initialize Select2 on category dropdown -->
+    <script>
+    $(document).ready(function() {
+        $('#category_id').select2();
+    });
+    </script>
 {% endblock %}

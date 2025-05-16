@@ -1,193 +1,206 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid px-4 py-5">
-    <!-- Breadcrumb and Header -->
-    <div class="row mb-5">
-        <div class="col">
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <a href="/" class="text-secondary text-decoration-none hover-text">
-                    <i class="bi bi-house-door fs-5"></i>
-                </a>
-                <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
-                <a href="/admin" class="text-secondary text-decoration-none hover-text">Admin Panel</a>
-                <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
-                <span class="text-primary fw-semibold">View Privileged Users</span>
-            </div>
-            <h1 class="display-4 fw-bold text-dark"><i class="bi bi-people me-2"></i>View Privileged Users</h1>
-            <p class="lead text-muted">See users with special permissions for a category.</p>
-        </div>
-    </div>
-
-    <!-- Form Card -->
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm rounded-3 form-card">
-                <div class="card-body p-4 p-md-5">
-                    <form method="post" action="/admin/view-privileged-users">
-                        <div class="mb-4">
-                            <label for="category_id" class="form-label fw-semibold text-dark">Select Category</label>
-                            <select class="form-select form-select-lg rounded-3" id="category_id" name="category_id" required>
-                                <option value="" disabled>Choose a category...</option>
-                                {% for category in categories %}
-                                    <option value="{{ category.id }}" {% if selected_category_id == category.id %}selected{% endif %}>
-                                        {{ category.name }} (ID:{{ category.id }}{% if category.hidden %} | Hidden{% endif %}{% if category.locked %} | Locked{% endif %})
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="/admin" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
-                            <button type="submit" class="btn btn-primary rounded-pill px-4">View Privileged Users</button>
-                        </div>
-                    </form>
+    <div class="container-fluid px-4 py-5">
+        <!-- Breadcrumb and Header -->
+        <div class="row mb-5">
+            <div class="col">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <a href="/" class="text-secondary text-decoration-none hover-text">
+                        <i class="bi bi-house-door fs-5"></i>
+                    </a>
+                    <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
+                    <a href="/admin" class="text-secondary text-decoration-none hover-text">Admin Panel</a>
+                    <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
+                    <span class="text-primary fw-semibold">View Privileged Users</span>
                 </div>
+                <h1 class="display-4 fw-bold text-dark"><i class="bi bi-people me-2"></i>View Privileged Users</h1>
+                <p class="lead text-muted">See users with special permissions for a category.</p>
             </div>
         </div>
-    </div>
 
-    <!-- Privileged Users Table or Alert -->
-    {% if privileged_users %}
-    <div class="row mt-4 justify-content-center">
-        <div class="col-lg-10"> <!-- Increased from col-lg-8 to col-lg-10 for wider table -->
-            <div class="card border-0 shadow-sm rounded-3">
-                <div class="card-body p-4">
-                    <h2 class="h5 fw-semibold text-dark mb-4">Privileged Users</h2>
-                    <div class="table-responsive" style="max-height: 600px;"> <!-- Added max-height for vertical scrolling -->
-                        <table class="table table-bordered table-striped align-middle table-hover">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th style="width: 10%;">ID</th> <!-- Adjusted column widths -->
-                                    <th style="width: 25%;">Username</th>
-                                    <th style="width: 35%;">Email</th>
-                                    <th style="width: 30%;">Permission</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for entry in privileged_users %}
-                                    <tr>
-                                        <td>{{ entry.user.id }}</td>
-                                        <td><a href="/user/{{ entry.user.id }}" target="_blank">{{ entry.user.username }}</a></td>
-                                        <td>{{ entry.user.email }}</td>
-                                        <td>{{ entry.permission_text }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+        <!-- Form Card -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-3 form-card">
+                    <div class="card-body p-4 p-md-5">
+                        <form method="post" action="/admin/view-privileged-users">
+                            <div class="mb-4">
+                                <label for="category_id" class="form-label fw-semibold text-dark">Select Category</label>
+                                <select class="form-select form-select-lg rounded-3" id="category_id" name="category_id" required>
+                                    <option value="" disabled>Choose a category...</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if selected_category_id == category.id %}selected{% endif %}>
+                                            {{ category.name }} (ID:{{ category.id }}{% if category.hidden %} | Hidden{% endif %}{% if category.locked %} | Locked{% endif %})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="/admin" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+                                <button type="submit" class="btn btn-primary rounded-pill px-4">View Privileged Users</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    {% else %}
-    <div class="row mt-4 justify-content-center">
-        <div class="col-lg-8">
-            <div class="alert alert-info d-flex align-items-center rounded-3 shadow-sm fade-in" role="alert">
-                <i class="bi bi-info-circle-fill me-3 fs-5 text-primary"></i>
-                <span>No privileged users found for this category.</span>
+
+        <!-- Privileged Users Table or Alert -->
+        {% if privileged_users %}
+        <div class="row mt-4 justify-content-center">
+            <div class="col-lg-10"> <!-- Increased from col-lg-8 to col-lg-10 for wider table -->
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-semibold text-dark mb-4">Privileged Users</h2>
+                        <div class="table-responsive" style="max-height: 600px;"> <!-- Added max-height for vertical scrolling -->
+                            <table class="table table-bordered table-striped align-middle table-hover">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th style="width: 10%;">ID</th> <!-- Adjusted column widths -->
+                                        <th style="width: 25%;">Username</th>
+                                        <th style="width: 35%;">Email</th>
+                                        <th style="width: 30%;">Permission</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in privileged_users %}
+                                        <tr>
+                                            <td>{{ entry.user.id }}</td>
+                                            <td><a href="/user/{{ entry.user.id }}" target="_blank">{{ entry.user.username }}</a></td>
+                                            <td>{{ entry.user.email }}</td>
+                                            <td>{{ entry.permission_text }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        {% else %}
+        <div class="row mt-4 justify-content-center">
+            <div class="col-lg-8">
+                <div class="alert alert-info d-flex align-items-center rounded-3 shadow-sm fade-in" role="alert">
+                    <i class="bi bi-info-circle-fill me-3 fs-5 text-primary"></i>
+                    <span>No privileged users found for this category.</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
 
-<style>
-    /* Hover effects for breadcrumb links */
-    .hover-text:hover {
-        color: #0d6efd !important;
-        transition: color 0.2s ease;
-    }
-
-    /* Card styling */
-    .form-card {
-        background-color: #fff;
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    /* Select focus states */
-    .form-select:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    /* Button hover effects */
-    .btn-primary:hover {
-        background-color: #005cbf;
-        border-color: #005cbf;
-        transform: translateY(-2px);
-        transition: all 0.2s ease;
-    }
-
-    .btn-outline-secondary:hover {
-        background-color: #f8f9fa;
-        transform: translateY(-2px);
-        transition: all 0.2s ease;
-    }
-
-    /* Table hover effect */
-    .table-hover tbody tr:hover {
-        background-color: #f8f9fa;
-        transition: background-color 0.2s ease;
-    }
-
-    /* Sticky table header */
-    .table-responsive {
-        overflow-x: auto; /* Horizontal scrolling for wide tables */
-        overflow-y: auto; /* Vertical scrolling for long tables */
-    }
-
-    .table-primary th {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        background-color: #0d6efd; /* Match table-primary background */
-        color: white;
-    }
-
-    /* Ensure table cells don't wrap unnecessarily */
-    .table td, .table th {
-        white-space: nowrap;
-    }
-
-    /* Allow email and permission columns to wrap if content is too long */
-    .table td:nth-child(3), .table td:nth-child(4) {
-        white-space: normal;
-        word-wrap: break-word;
-    }
-
-    /* Alert animation */
-    .fade-in {
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    /* Fade-in animation */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
+    <style>
+        /* Hover effects for breadcrumb links */
+        .hover-text:hover {
+            color: #0d6efd !important;
+            transition: color 0.2s ease;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
+        /* Card styling */
         .form-card {
-            padding: 1.5rem;
+            background-color: #fff;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        .btn {
-            width: 100%;
-            margin-bottom: 0.5rem;
+
+        /* Select focus states */
+        .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
-        .d-flex {
-            flex-direction: column;
+
+        /* Button hover effects */
+        .btn-primary:hover {
+            background-color: #005cbf;
+            border-color: #005cbf;
+            transform: translateY(-2px);
+            transition: all 0.2s ease;
         }
+
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            transition: all 0.2s ease;
+        }
+
+        /* Table hover effect */
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Sticky table header */
         .table-responsive {
-            max-height: 400px; /* Smaller max-height for mobile */
+            overflow-x: auto; /* Horizontal scrolling for wide tables */
+            overflow-y: auto; /* Vertical scrolling for long tables */
         }
-    }
-</style>
+
+        .table-primary th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #0d6efd; /* Match table-primary background */
+            color: white;
+        }
+
+        /* Ensure table cells don't wrap unnecessarily */
+        .table td, .table th {
+            white-space: nowrap;
+        }
+
+        /* Allow email and permission columns to wrap if content is too long */
+        .table td:nth-child(3), .table td:nth-child(4) {
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        /* Alert animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-card {
+                padding: 1.5rem;
+            }
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .d-flex {
+                flex-direction: column;
+            }
+            .table-responsive {
+                max-height: 400px; /* Smaller max-height for mobile */
+            }
+        }
+    </style>
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+{% block js %}
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Initialize Select2 on category dropdown -->
+    <script>
+    $(document).ready(function() {
+        $('#category_id').select2();
+    });
+    </script>
 {% endblock %}

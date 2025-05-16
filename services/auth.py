@@ -19,7 +19,7 @@ class AuthService:
             async with httpx.AsyncClient() as client:
                 headers = {"Cache-Control": "no-cache",
                            "Authorization": access_token}
-                response = await client.get(f"http://172.245.56.116:8000/auth/",
+                response = await client.get(f"http://172.245.56.116:8000/users/me",
                                             headers=headers,)
 
                 if response.status_code == 200:

@@ -53,8 +53,8 @@
                     <!-- Message from authenticated user (displayed on the left) -->
                     <div class="message-row d-flex justify-content-start mb-3">
                         <div class="message-avatar me-2">
-                            {% if auth_user.avatar %}
-                            <img src="{{ auth_user.avatar }}" alt="{{ auth_user.username }}" class="rounded-circle message-user-avatar" style="width: 36px; height: 36px; object-fit: cover;">
+                            {% if avatar %}
+                            <img src="{{ avatar }}" alt="{{ username }}" class="rounded-circle message-user-avatar" style="width: 36px; height: 36px; object-fit: cover;">
                             {% else %}
                             <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center message-user-avatar" style="width: 36px; height: 36px;">
                                 <i class="bi bi-person-fill text-primary" style="font-size: 1.2rem;"></i>

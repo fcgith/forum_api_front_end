@@ -73,14 +73,13 @@ class ConversationsService:
         data = await AuthService.get_user_data_from_cookie(request)
 
         if not data["is_authenticated"]:
-            raise not_authorized
+            return RedirectResponse(url="/auth/login", status_code=303)
 
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
 
-            # Get conversation partner details
             user_response = await client.get(
-                f"http://172.245.56.116:8000/users/{conversation_user_id}?token={token}",
+                f"http://172.245.56.116:8000/users/{conversation_user_id}",
                 headers=headers
             )
 
@@ -107,21 +106,9 @@ class ConversationsService:
                 # Handle any errors that might occur during the API call
                 messages = []
 
-            # Get authenticated user details
-            auth_user_response = await client.get(
-                f"http://172.245.56.116:8000/users/{data.get('id')}?token={token}",
-                headers=headers
-            )
-
-            if auth_user_response.status_code == 200:
-                auth_user = auth_user_response.json()
-            else:
-                auth_user = {"username": data.get("username"), "avatar": None}
-
             data["conversation_user"] = conversation_user
             data["messages"] = messages
             data["user_id"] = data.get("id")  # Pass the authenticated user's ID to the template
-            data["auth_user"] = auth_user  # Pass the authenticated user's data to the template
             data["admin"] = True if data.get("admin") > 0 else False
             data["title"] = f"Conversation with {conversation_user['username']} - Forum API Frontend"
             data["request"] = request

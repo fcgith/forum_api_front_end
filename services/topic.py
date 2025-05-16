@@ -220,7 +220,7 @@ class TopicService:
 
             # Post the reply using the correct API endpoint
             response = await client.post(
-                f"http://172.245.56.116:8000/replies/add/{topic_id}?token={token}",
+                f"http://172.245.56.116:8000/replies/{topic_id}?token={token}",
                 json={"content": content_with_br},
                 headers=headers
             )
@@ -335,7 +335,8 @@ class TopicService:
 
             # Send PUT request to vote on the reply
             response = await client.put(
-                f"http://172.245.56.116:8000/replies/vote/{reply_id}/{vote_type}?token={token}",
+                f"http://172.245.56.116:8000/replies/vote/{reply_id}?token={token}",
+                json={"vote_type": vote_type},
                 headers=headers
             )
 

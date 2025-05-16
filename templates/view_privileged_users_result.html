@@ -21,8 +21,8 @@
 
         <!-- Form Card -->
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm rounded-3 form-card">
+            <div class="col-lg-11">
+                <div class="card border-0 rounded-4 admin-card">
                     <div class="card-body p-4 p-md-5">
                         <form method="post" action="/admin/view-privileged-users">
                             <div class="mb-4">
@@ -49,15 +49,15 @@
         <!-- Privileged Users Table or Alert -->
         {% if privileged_users %}
         <div class="row mt-4 justify-content-center">
-            <div class="col-lg-10"> <!-- Increased from col-lg-8 to col-lg-10 for wider table -->
-                <div class="card border-0 shadow-sm rounded-3">
+            <div class="col-lg-11"> <!-- Increased to col-lg-11 for wider table -->
+                <div class="card border-0 rounded-4 admin-card">
                     <div class="card-body p-4">
                         <h2 class="h5 fw-semibold text-dark mb-4">Privileged Users</h2>
-                        <div class="table-responsive" style="max-height: 600px;"> <!-- Added max-height for vertical scrolling -->
+                        <div class="table-responsive" style="max-height: 600px;">
                             <table class="table table-bordered table-striped align-middle table-hover">
                                 <thead class="table-primary">
                                     <tr>
-                                        <th style="width: 10%;">ID</th> <!-- Adjusted column widths -->
+                                        <th style="width: 10%;">ID</th>
                                         <th style="width: 25%;">Username</th>
                                         <th style="width: 35%;">Email</th>
                                         <th style="width: 30%;">Permission</th>
@@ -81,10 +81,14 @@
         </div>
         {% else %}
         <div class="row mt-4 justify-content-center">
-            <div class="col-lg-8">
-                <div class="alert alert-info d-flex align-items-center rounded-3 shadow-sm fade-in" role="alert">
-                    <i class="bi bi-info-circle-fill me-3 fs-5 text-primary"></i>
-                    <span>No privileged users found for this category.</span>
+            <div class="col-lg-11">
+                <div class="card border-0 rounded-4 admin-card">
+                    <div class="card-body p-4">
+                        <div class="alert alert-info d-flex align-items-center rounded-3 fade-in" role="alert">
+                            <i class="bi bi-info-circle-fill me-3 fs-5 text-primary"></i>
+                            <span>No privileged users found for this category.</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -99,9 +103,16 @@
         }
 
         /* Card styling */
-        .form-card {
-            background-color: #fff;
+        .admin-card {
+            background-color: #fefefe;
             animation: fadeIn 0.5s ease-in-out;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25), 0 15px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-10px);
         }
 
         /* Select focus states */
@@ -133,15 +144,15 @@
 
         /* Sticky table header */
         .table-responsive {
-            overflow-x: auto; /* Horizontal scrolling for wide tables */
-            overflow-y: auto; /* Vertical scrolling for long tables */
+            overflow-x: auto;
+            overflow-y: auto;
         }
 
         .table-primary th {
             position: sticky;
             top: 0;
             z-index: 1;
-            background-color: #0d6efd; /* Match table-primary background */
+            background-color: #0d6efd;
             color: white;
         }
 
@@ -175,9 +186,6 @@
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .form-card {
-                padding: 1.5rem;
-            }
             .btn {
                 width: 100%;
                 margin-bottom: 0.5rem;
@@ -186,13 +194,14 @@
                 flex-direction: column;
             }
             .table-responsive {
-                max-height: 400px; /* Smaller max-height for mobile */
+                max-height: 400px;
             }
         }
     </style>
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock %}
+
 {% block js %}
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

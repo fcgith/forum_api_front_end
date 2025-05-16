@@ -303,3 +303,40 @@
             }
         </style>
 {% endblock %}
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get navbar height for offset
+        const navbarHeight = document.querySelector('.navbar-custom').offsetHeight || 70;
+
+        // Force scroll to top to prevent bottom scroll
+        window.scrollTo(0, 0);
+
+        // Scroll to topic title first
+        const topicTitle = document.querySelector('.display-5');
+        if (topicTitle) {
+            const titlePosition = topicTitle.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo({
+                top: titlePosition - navbarHeight, /* Adjust for navbar */
+                behavior: 'smooth'
+            });
+        }
+
+        // After scrolling to title, check for URL fragment and scroll to it
+        const hash = window.location.hash;
+        if (hash) {
+            const targetElement = document.querySelector(hash);
+            if (targetElement) {
+                // Delay to ensure title scroll completes
+                setTimeout(() => {
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    window.scrollTo({
+                        top: elementPosition - navbarHeight, /* Adjust for navbar */
+                        behavior: 'smooth'
+                    });
+                }, 500); /* Adjust delay if needed */
+            }
+        }
+    });
+</script>
+{% endblock %}

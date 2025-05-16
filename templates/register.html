@@ -26,7 +26,8 @@
         </div>
         <div class="card-body">
             <ul class="mb-0">
-                <li>Password must be at least 8 characters long</li>
+                <li>Username must be at least 6 and at most 16 characters long.</li>
+                <li>Password must be at least 8 characters long.</li>
             </ul>
         </div>
     </div>
@@ -92,5 +93,59 @@
     .card.border-primary {
         border-left: 4px solid #0d6efd;
     }
+    .card.border-primary {
+        border-left: 4px solid #0d6efd;
+    }
+
+    /* Smooth transitions for form input validation */
+    .form-control {
+        transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Ensure Bootstrap validation classes have smooth transitions */
+    .form-control.is-valid,
+    .form-control.is-invalid {
+        transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    }
 </style>
+{% endblock %}
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        // Function to validate and style input
+        function validateInput(input, minLength, maxLength) {
+            const valueLength = input.value.length;
+            // Remove both classes first to reset state
+            input.classList.remove('is-valid', 'is-invalid');
+
+            if (maxLength) {
+                // Username: check both min and max length
+                if (valueLength >= minLength && valueLength <= maxLength) {
+                    input.classList.add('is-valid');
+                } else if (valueLength > 0) {
+                    input.classList.add('is-invalid');
+                }
+            } else {
+                // Password: check only min length
+                if (valueLength >= minLength) {
+                    input.classList.add('is-valid');
+                } else if (valueLength > 0) {
+                    input.classList.add('is-invalid');
+                }
+            }
+        }
+
+        // Add input event listeners
+        usernameInput.addEventListener('input', function() {
+            validateInput(usernameInput, 6, 16);
+        });
+
+        passwordInput.addEventListener('input', function() {
+            validateInput(passwordInput, 8);
+        });
+    });
+</script>
 {% endblock %}

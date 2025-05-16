@@ -2,12 +2,13 @@
 
 {% block content %}
     <div class="welcome-container">
-        <div class="container py-3">
+        <div class="container py-4">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="text-center mb-3 welcome-header">
-                        <h1 class="display-4 fw-bold text-gradient mb-2">Welcome!</h1>
+                    <div class="text-center mb-4 welcome-header">
+                        <h1 class="display-4 fw-bold text-primary mb-2">Welcome</h1>
                         <div class="divider mx-auto"></div>
+                        <p class="text-muted lead mt-2">Join our vibrant community of ideas</p>
                     </div>
 
                     <div class="card welcome-card shadow-sm border-0">
@@ -17,18 +18,18 @@
                                     <div class="user-icon mb-2">
                                         <i class="bi bi-person-circle"></i>
                                     </div>
-                                    <h2 class="h3 fw-bold text-primary">Hello, {{ username }}!</h2>
-                                    <p class="lead text-muted">We're glad to see you again.</p>
+                                    <h2 class="h4 fw-semibold text-dark">Hello, {{ username }}!</h2>
+                                    <p class="text-muted small mt-1">Great to see you back!</p>
                                 </div>
-                                <div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
-                                    <a href="/" class="btn btn-outline-primary action-btn">
-                                        <i class="bi bi-house-door me-2"></i>Browse Forum
+                                <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
+                                    <a href="/" class="btn btn-primary action-btn">
+                                        <i class="bi bi-house-door me-1"></i>Browse Forum
                                     </a>
-                                    <a href="/user/me" class="btn btn-outline-success action-btn">
-                                        <i class="bi bi-person me-2"></i>My Profile
+                                    <a href="/user/me" class="btn btn-outline-primary action-btn">
+                                        <i class="bi bi-person me-1"></i>My Profile
                                     </a>
                                     <a href="/auth/logout" class="btn btn-outline-secondary action-btn">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                        <i class="bi bi-box-arrow-right me-1"></i>Logout
                                     </a>
                                 </div>
                             {% else %}
@@ -36,35 +37,35 @@
                                     <div class="welcome-icon mb-2">
                                         <i class="bi bi-chat-square-text"></i>
                                     </div>
-                                    <h2 class="h3 fw-bold text-primary">Join Our Community</h2>
-                                    <p class="lead text-muted">Connect, discuss, and share with others.</p>
+                                    <h2 class="h4 fw-semibold text-dark">Join Our Community</h2>
+                                    <p class="text-muted small mt-1">Connect and share with others</p>
                                 </div>
                                 <div class="row mt-3 g-3">
                                     <div class="col-md-6">
                                         <div class="feature-item text-center p-3">
-                                            <div class="feature-icon">
+                                            <div class="feature-icon mb-2">
                                                 <i class="bi bi-people"></i>
                                             </div>
-                                            <h3 class="h5 mt-2">Community Discussions</h3>
-                                            <p class="text-muted small">Engage in meaningful conversations</p>
+                                            <h3 class="h6 fw-semibold">Engaging Discussions</h3>
+                                            <p class="text-muted small mb-0">Dive into meaningful conversations</p>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="feature-item text-center p-3">
-                                            <div class="feature-icon">
+                                            <div class="feature-icon mb-2">
                                                 <i class="bi bi-lightbulb"></i>
                                             </div>
-                                            <h3 class="h5 mt-2">Share Knowledge</h3>
-                                            <p class="text-muted small">Learn and contribute with others</p>
+                                            <h3 class="h6 fw-semibold">Share Knowledge</h3>
+                                            <p class="text-muted small mb-0">Inspire and learn</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
-                                    <a class="btn btn-primary btn-lg action-btn" href="/auth/login" role="button">
-                                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
+                                    <a class="btn btn-primary action-btn" href="/auth/login">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i>Login
                                     </a>
-                                    <a class="btn btn-outline-primary btn-lg action-btn" href="/auth/register" role="button">
-                                        <i class="bi bi-person-plus me-2"></i>Register
+                                    <a class="btn btn-outline-primary action-btn" href="/auth/register">
+                                        <i class="bi bi-person-plus me-1"></i>Register
                                     </a>
                                 </div>
                             {% endif %}
@@ -76,81 +77,109 @@
     </div>
 
     <style>
+        /* Container Styling */
         .welcome-container {
             min-height: auto;
             padding: 2rem 0;
             display: flex;
             align-items: center;
+            background: #ffffff;
         }
 
+        /* Header Styling */
         .welcome-header {
             animation: fadeInDown 0.8s ease-out;
         }
 
-        .text-gradient {
-            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .text-primary {
+            color: #0d6efd !important;
         }
 
         .divider {
             height: 4px;
-            width: 70px;
-            background: linear-gradient(90deg, #0d6efd, #0dcaf0);
-            border-radius: 2px;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
+            width: 60px;
+            background: #0d6efd;
+            border-radius: 4px;
+            margin: 1rem auto;
         }
 
+        /* Card Styling */
         .welcome-card {
-            border-radius: 15px;
-            overflow: hidden;
+            border-radius: 0.5rem;
+            background: #f8f9fa;
             animation: fadeInUp 0.8s ease-out;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid #0d6efd;
         }
 
         .welcome-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
         }
 
+        /* Icons */
         .user-icon, .welcome-icon {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #0d6efd;
-            animation: pulse 2s infinite;
+            animation: pulse 2s infinite ease-in-out;
         }
 
         .feature-icon {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             color: #0d6efd;
             transition: transform 0.3s ease;
         }
 
+        /* Feature Items */
         .feature-item {
-            border-radius: 10px;
+            border-radius: 0.5rem;
+            background: #ffffff;
             transition: all 0.3s ease;
         }
 
         .feature-item:hover {
-            background-color: rgba(13, 110, 253, 0.05);
+            background: rgba(13, 110, 253, 0.05);
+            transform: translateY(-3px);
         }
 
         .feature-item:hover .feature-icon {
-            transform: scale(1.2);
+            transform: scale(1.1);
         }
 
+        /* Buttons */
         .action-btn {
+            border-radius: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
-            border-radius: 20px;
-            padding: 0.3rem 1rem;
         }
 
         .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
+        .btn-primary {
+            background: #0d6efd;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-outline-primary {
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        .btn-outline-primary:hover {
+            background: #0d6efd;
+            color: #ffffff;
+        }
+
+        /* Animations */
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -175,8 +204,43 @@
 
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.05); }
             100% { transform: scale(1); }
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h6 {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.01em;
+        }
+
+        p {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .welcome-container {
+                padding: 1.5rem 0;
+            }
+
+            .welcome-card {
+                padding: 1rem;
+            }
+
+            .action-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .user-icon, .welcome-icon {
+                font-size: 1.75rem;
+            }
+
+            .feature-icon {
+                font-size: 1.25rem;
+            }
         }
     </style>
 {% endblock %}

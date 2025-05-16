@@ -1,47 +1,132 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="container-fluid px-4 py-3">
-        <div class="row mb-4">
-            <div class="col">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <a href="/" class="text-secondary text-decoration-none">
-                        <i class="bi bi-house-door"></i>
-                    </a>
-                    <i class="bi bi-chevron-right text-muted small"></i>
-                    <a href="/admin" class="text-secondary text-decoration-none">Admin Panel</a>
-                    <i class="bi bi-chevron-right text-muted small"></i>
-                    <span class="text-primary">Lock Category</span>
+<div class="container-fluid px-4 py-5">
+    <!-- Breadcrumb and Header -->
+    <div class="row mb-5">
+        <div class="col">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <a href="/" class="text-secondary text-decoration-none hover-text">
+                    <i class="bi bi-house-door fs-5"></i>
+                </a>
+                <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
+                <a href="/admin" class="text-secondary text-decoration-none hover-text">Admin Panel</a>
+                <i class="bi bi-chevron-right text-muted" style="font-size: 0.9rem;"></i>
+                <span class="text-primary fw-semibold">Lock Category</span>
+            </div>
+            <h1 class="display-4 fw-bold text-dark"><i class="bi bi-lock me-2"></i>Lock Category</h1>
+            <p class="lead text-muted">Lock a category to prevent new topics and replies.</p>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3 form-card">
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" action="/admin/lock-category">
+                        <div class="mb-4">
+                            <label for="category_id" class="form-label fw-semibold text-dark">Select Category</label>
+                            <select class="form-select form-select-lg rounded-3" id="category_id" name="category_id" required>
+                                <option value="" selected disabled>Choose a category...</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="/admin" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">Lock Category</button>
+                        </div>
+                    </form>
                 </div>
-                <h1 class="display-5 fw-bold">Lock Category</h1>
-                <p class="lead">Lock a category to prevent new topics and replies.</p>
             </div>
         </div>
-
-        <form method="post" action="/admin/lock-category">
-            <div class="mb-3">
-                <label for="category_id" class="form-label">Select Category</label>
-                <select class="form-select" id="category_id" name="category_id" required>
-                    <option value="" selected disabled>Choose a category...</option>
-                    {% for category in categories %}
-                        <option value="{{ category.id }}">
-                            {{ category.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <a href="/admin" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Lock Category</button>
-            </div>
-        </form>
-
-        {% if message %}
-            {% if success %}
-                <div class="alert alert-success text-center mt-3">{{ message | safe }}</div>
-            {% else %}
-                <div class="alert alert-danger text-center mt-3">{{ message | safe }}</div>
-            {% endif %}
-        {% endif %}
     </div>
+
+    <!-- Alerts -->
+    {% if message %}
+    <div class="row mt-4 justify-content-center">
+        <div class="col-lg-8">
+            {% if success %}
+            <div class="alert alert-success d-flex align-items-center rounded-3 shadow-sm fade-in" role="alert">
+                <i class="bi bi-check-circle-fill me-3 fs-5 text-success"></i>
+                <span>{{ message | safe }}</span>
+            </div>
+            {% else %}
+            <div class="alert alert-danger d-flex align-items-center rounded-3 shadow-sm fade-in" role="alert">
+                <i class="bi bi-exclamation-circle-fill me-3 fs-5 text-danger"></i>
+                <span>{{ message | safe }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    /* Hover effects for breadcrumb links */
+    .hover-text:hover {
+        color: #0d6efd !important;
+        transition: color 0.2s ease;
+    }
+
+    /* Card styling */
+    .form-card {
+        background-color: #fff;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    /* Select focus states */
+    .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* Button hover effects */
+    .btn-primary:hover {
+        background-color: #005cbf;
+        border-color: #005cbf;
+        transform: translateY(-2px);
+        transition: all 0.2s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-2px);
+        transition: all 0.2s ease;
+    }
+
+    /* Alert animation */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    /* Fade-in animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .form-card {
+            padding: 1.5rem;
+        }
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        .d-flex {
+            flex-direction: column;
+        }
+    }
+</style>
 {% endblock %}

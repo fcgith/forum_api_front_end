@@ -31,7 +31,7 @@
                                 <option value="" selected disabled>Choose a category...</option>
                                 {% for category in categories %}
                                     <option value="{{ category.id }}" {% if category.hidden %}class="text-danger"{% endif %}>
-                                        {{ category.name }} {% if category.hidden %}(Hidden){% endif %}
+                                        {{ category.name }} (ID:{{ category.id }}{% if category.hidden %} | Hidden{% endif %}{% if category.locked %} | Locked{% endif %})
                                     </option>
                                 {% endfor %}
                             </select>

@@ -31,7 +31,7 @@
                                 <option value="" disabled>Choose a category...</option>
                                 {% for category in categories %}
                                     <option value="{{ category.id }}" {% if selected_category_id == category.id %}selected{% endif %}>
-                                        {{ category.name }} (ID: {{ category.id }})
+                                        {{ category.name }} (ID:{{ category.id }}{% if category.hidden %} | Hidden{% endif %}{% if category.locked %} | Locked{% endif %})
                                     </option>
                                 {% endfor %}
                             </select>

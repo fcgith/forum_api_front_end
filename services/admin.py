@@ -195,9 +195,9 @@ class AdminService:
 
         # Make the API request to update the category's hidden status
         async with httpx.AsyncClient() as client:
-            headers = {"Content-Type": "application/json"}
+            headers = {"Content-Type": "application/json", "Authorization": token}
             response = await client.put(
-                f"http://172.245.56.116:8000/categories/update-hide-status?token={token}",
+                f"http://172.245.56.116:8000/categories/hide-status",
                 json={"category_id": category_id, "hidden": hidden_value},
                 headers=headers
             )

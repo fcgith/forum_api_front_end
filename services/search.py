@@ -27,7 +27,7 @@ class SearchService:
         async with httpx.AsyncClient() as client:
             headers = {"Cache-Control": "no-cache", "Authorization": token}
             response = await client.get(
-                f"http://172.245.56.116:8000/topics/?token={token}&search={search}&page={api_page}&sort={sort}",
+                f"http://172.245.56.116:8000/topics/?search={search}&page={api_page}&sort={sort}",
                 headers=headers
             )
 

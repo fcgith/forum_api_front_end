@@ -30,9 +30,9 @@ class PermissionService:
         user_data = await AuthService.get_user_data_from_cookie(request)
         if not user_data["admin"] > 0:
             async with httpx.AsyncClient() as client:
-                headers = {"Cache-Control": "no-cache"}
+                headers = {"Cache-Control": "no-cache", "Authorization": token}
                 response = await client.get(
-                    f"http://172.245.56.116:8000/categories/{category_id}/check-permission?token={token}",
+                    f"http://172.245.56.116:8000/categories/{category_id}/check-permission",
                     headers=headers
                 )
 

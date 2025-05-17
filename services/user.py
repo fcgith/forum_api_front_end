@@ -79,6 +79,8 @@ class UserService:
         """
         # Get authentication status for the current user
         user_data = await AuthService.get_user_data_from_cookie(request)
+        if not user_data["is_authenticated"]:
+            return RedirectResponse(url="/auth/login", status_code=303)
 
         # Get the token from the cookie if the user is logged in
         token = Cookies.get_access_token_from_cookie(request)
@@ -90,14 +92,10 @@ class UserService:
 
         # Make the API call to get the user profile data
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
 
             # Add token to the request if available
             api_url = f"http://172.245.56.116:8000/users/{user_id}"
-            if token:
-                api_url += f"?token={token}"
-            else:
-                raise not_authorized
 
             response = await client.get(api_url, headers=headers)
 

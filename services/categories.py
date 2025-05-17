@@ -13,7 +13,7 @@ class CategoryService:
         pass
 
     @classmethod
-    async def get_topic_form(cls, request, category):
+    async def get_topic_form(cls, request, category_id):
         token = Cookies.get_access_token_from_cookie(request)
         data = await AuthService.get_user_data_from_cookie(request)
 
@@ -21,12 +21,12 @@ class CategoryService:
             raise not_authorized
 
         # Check the user's permission for this category
-        permission_type = await PermissionService.check_category_permission(request, category)
+        permission_type = await PermissionService.check_category_permission(request, category_id)
 
         # Get category details to check if it's hidden
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            response_category = await client.get(f"http://172.245.56.116:8000/categories/{category}?token={token}", headers=headers)
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
+            response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}", headers=headers)
 
             if response_category.status_code == 404:
                 raise not_found
@@ -58,7 +58,7 @@ class CategoryService:
             )
 
     @classmethod
-    async def get_category_by_id(cls, request, category):
+    async def get_category_by_id(cls, request, category_id):
         token = Cookies.get_access_token_from_cookie(request)
         data = await AuthService.get_user_data_from_cookie(request)
 
@@ -66,11 +66,11 @@ class CategoryService:
             raise not_authorized
 
         # Check the user's permission for this category
-        permission_type = await PermissionService.check_category_permission(request, category)
+        permission_type = await PermissionService.check_category_permission(request, category_id)
 
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            response_category = await client.get(f"http://172.245.56.116:8000/categories/{category}?token={token}",
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
+            response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}",
                                                  headers=headers)
 
             if response_category.status_code == 404:
@@ -88,7 +88,7 @@ class CategoryService:
 
             # If the user can view the category, get the topics
             response_topics = await client.get(
-                f"http://172.245.56.116:8000/categories/{category}/topics?token={token}", headers=headers)
+                f"http://172.245.56.116:8000/categories/{category_id}/topics", headers=headers)
 
             if response_topics.status_code != 200:
                 raise not_authorized
@@ -205,9 +205,9 @@ class CategoryService:
                 }
 
                 response = await client.post(
-                    f"http://172.245.56.116:8000/topics/?token={token}",
+                    f"http://172.245.56.116:8000/topics/",
                     json=topic_data,
-                    headers={"Content-Type": "application/json"}
+                    headers={"Content-Type": "application/json", "Authorization": token}
                 )
 
                 if response.status_code == 200 or response.status_code == 201:

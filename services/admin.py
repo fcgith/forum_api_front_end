@@ -111,9 +111,9 @@ class AdminService:
 
         # Make the API request to add the category
         async with httpx.AsyncClient() as client:
-            headers = {"Content-Type": "application/json"}
+            headers = {"Content-Type": "application/json", "Authorization": token}
             response = await client.post(
-                f"http://172.245.56.116:8000/categories/add?token={token}",
+                f"http://172.245.56.116:8000/categories/add",
                 json={"name": name, "description": description},
                 headers=headers
             )
@@ -292,7 +292,8 @@ class AdminService:
         # Make the API request to lock the category
         async with httpx.AsyncClient() as client:
             response = await client.put(
-                f"http://172.245.56.116:8000/categories/{category_id}/lock?token={token}"
+                f"http://172.245.56.116:8000/categories/{category_id}/lock",
+                headers={"Content-Type": "application/json", "Authorization": token}
             )
 
             # Fetch all categories again to display the updated list
@@ -368,7 +369,8 @@ class AdminService:
         # Make the API request to lock the topic
         async with httpx.AsyncClient() as client:
             response = await client.put(
-                f"http://172.245.56.116:8000/topics/{topic_id}/lock?token={token}"
+                f"http://172.245.56.116:8000/topics/{topic_id}/lock",
+                headers={"Content-Type": "application/json", "Authorization": token}
             )
 
             user_data = await AuthService.get_user_data_from_cookie(request)

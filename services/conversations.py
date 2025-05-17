@@ -20,8 +20,9 @@ class ConversationsService:
             raise not_authorized
 
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            response = await client.get(f"http://172.245.56.116:8000/conversations/?token={token}", headers=headers)
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
+            response = await client.get(f"http://172.245.56.116:8000/conversations/",
+                                        headers=headers)
 
             if response.status_code == 404:
                 raise not_found
@@ -35,7 +36,7 @@ class ConversationsService:
             for user in conversations:
                 try:
                     last_message_response = await client.get(
-                        f"http://172.245.56.116:8000/conversations/last-message/{user['id']}?token={token}",
+                        f"http://172.245.56.116:8000/conversations/last-message/{user['id']}",
                         headers=headers
                     )
 
@@ -45,7 +46,8 @@ class ConversationsService:
                         user['last_message'] = last_message
                         # Truncate the content if it's too long
                         if 'content' in last_message and last_message['content']:
-                            user['last_message_content'] = last_message['content'][:50] + ('...' if len(last_message['content']) > 50 else '')
+                            user['last_message_content'] = last_message['content'][:50] + (
+                                '...' if len(last_message['content']) > 50 else '')
                         else:
                             user['last_message_content'] = "No messages yet"
                     else:
@@ -94,7 +96,7 @@ class ConversationsService:
             # Fetch messages between users
             try:
                 messages_response = await client.get(
-                    f"http://172.245.56.116:8000/conversations/msg/{conversation_user_id}?token={token}",
+                    f"http://172.245.56.116:8000/conversations/msg/{conversation_user_id}",
                     headers=headers
                 )
 
@@ -137,7 +139,8 @@ class ConversationsService:
 
         if not message_content:
             # Return to the conversation page with an error message
-            return await cls.get_conversation_messages(request, conversation_user_id, error_message="Message cannot be empty")
+            return await cls.get_conversation_messages(request, conversation_user_id,
+                                                       error_message="Message cannot be empty")
 
         # Prepare the request body
         message_data = {
@@ -150,7 +153,7 @@ class ConversationsService:
             headers = {"Content-Type": "application/json", "Cache-Control": "no-cache"}
             try:
                 response = await client.post(
-                    f"http://172.245.56.116:8000/conversations/messages/?token={token}",
+                    f"http://172.245.56.116:8000/conversations/messages/",
                     json=message_data,
                     headers=headers
                 )
@@ -163,12 +166,14 @@ class ConversationsService:
                     # Try to get error message from response
                     try:
                         error_data = response.json()
-                        error_message = error_data.get("message", error_data.get("detail", f"Error sending message: {response.status_code}"))
+                        error_message = error_data.get("message", error_data.get("detail",
+                                                                                 f"Error sending message: {response.status_code}"))
                     except:
                         error_message = f"Error sending message: {response.status_code}"
 
                     # Return to the conversation page with the error message
-                    return await cls.get_conversation_messages(request, conversation_user_id, error_message=error_message)
+                    return await cls.get_conversation_messages(request, conversation_user_id,
+                                                               error_message=error_message)
 
             except httpx.RequestError as e:
                 # Handle connection errors

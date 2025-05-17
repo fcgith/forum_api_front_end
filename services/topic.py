@@ -256,21 +256,17 @@ class TopicService:
         """
         # Get authentication status
         data = await AuthService.verify_logged_in(request)
-        if not data["is_authenticated"]:
-            return RedirectResponse(url="/auth/login")
 
         # Get token for API requests
         token = Cookies.get_access_token_from_cookie(request)
 
         # Get topic details to check if the user is the topic creator
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            if token:
-                headers["Authorization"] = f"Bearer {token}"
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
 
             # Get topic details
             response_topic = await client.get(
-                f"http://172.245.56.116:8000/topics/{topic_id}?token={token}", headers=headers)
+                f"http://172.245.56.116:8000/topics/{topic_id}", headers=headers)
 
             if response_topic.status_code == 404:
                 return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
@@ -291,7 +287,7 @@ class TopicService:
 
             # Send PUT request to mark the reply as best
             response = await client.put(
-                f"http://172.245.56.116:8000/replies/best/{topic_id}/{reply_id}?token={token}",
+                f"http://172.245.56.116:8000/replies/best/{topic_id}/{reply_id}",
                 headers=headers
             )
 
@@ -321,21 +317,17 @@ class TopicService:
         """
         # Get authentication status
         data = await AuthService.verify_logged_in(request)
-        if not data["is_authenticated"]:
-            return RedirectResponse(url="/auth/login")
 
         # Get token for API requests
         token = Cookies.get_access_token_from_cookie(request)
 
         # Send PUT request to vote on the reply
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            if token:
-                headers["Authorization"] = f"Bearer {token}"
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
 
             # Send PUT request to vote on the reply
             response = await client.put(
-                f"http://172.245.56.116:8000/replies/vote/{reply_id}?token={token}",
+                f"http://172.245.56.116:8000/replies/vote/{reply_id}",
                 json={"vote_type": vote_type},
                 headers=headers
             )

@@ -14,6 +14,7 @@ class TopicService:
 
         # Get authentication status
         token = Cookies.get_access_token_from_cookie(request)
+        headers = {"Cache-Control": "no-cache", "Authorization": token}
         data = await AuthService.verify_logged_in(request)
         data["request"] = request
         data["title"] = "Topic - Forum API Frontend"
@@ -21,14 +22,12 @@ class TopicService:
         if success:
             data["success"] = "Topic created successfully"
 
-        headers = {}
-        if token:
-            headers["Authorization"] = f"Bearer {token}"
-
         async with httpx.AsyncClient() as client:
             # Get topic details
             response_topic = await client.get(
-                f"http://172.245.56.116:8000/topics/{topic_id}?token={token}", headers=headers)
+                f"http://172.245.56.116:8000/topics/{topic_id}",
+                    headers=headers
+            )
 
             if response_topic.status_code == 404:
                 raise not_found
@@ -44,7 +43,9 @@ class TopicService:
 
             # Get category details to check if it's hidden
             response_category = await client.get(
-                f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
+                f"http://172.245.56.116:8000/categories/{category_id}",
+                    headers=headers
+            )
 
             if response_category.status_code == 404:
                 raise not_found
@@ -61,7 +62,7 @@ class TopicService:
 
             # Get replies for the topic
             response_replies = await client.get(
-                f"http://172.245.56.116:8000/topics/{topic_id}/replies?token={token}", headers=headers)
+                f"http://172.245.56.116:8000/topics/{topic_id}/replies", headers=headers)
 
             if response_replies.status_code != 200:
                 raise not_authorized
@@ -85,7 +86,7 @@ class TopicService:
                 reply_id = reply.get("id")
                 if reply_id:
                     response_vote = await client.get(
-                        f"http://172.245.56.116:8000/replies/vote/{reply_id}?token={token}", headers=headers)
+                        f"http://172.245.56.116:8000/replies/vote/{reply_id}", headers=headers)
 
                     if response_vote.status_code == 200:
                         vote_data = response_vote.json()
@@ -112,14 +113,12 @@ class TopicService:
 
         # Get token for API requests
         token = Cookies.get_access_token_from_cookie(request)
-        headers = {}
-        if token:
-            headers["Authorization"] = f"Bearer {token}"
 
         async with httpx.AsyncClient() as client:
             # Get topic details
             response_topic = await client.get(
-                f"http://172.245.56.116:8000/topics/{topic_id}?token={token}", headers=headers)
+                f"http://172.245.56.116:8000/topics/{topic_id}",
+                    headers={"Authorization": token})
 
             if response_topic.status_code == 404:
                 return templates.TemplateResponse("404.html", data, status_code=404)
@@ -135,7 +134,9 @@ class TopicService:
 
             # Get category details to check if it's hidden
             response_category = await client.get(
-                f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
+                f"http://172.245.56.116:8000/categories/{category_id}",
+                    headers={"Authorization": token}
+            )
 
             if response_category.status_code == 404:
                 return templates.TemplateResponse("404.html", data, status_code=404)
@@ -170,13 +171,12 @@ class TopicService:
 
         # Get topic details to check category permissions
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            if token:
-                headers["Authorization"] = f"Bearer {token}"
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
+
 
             # Get topic details
             response_topic = await client.get(
-                f"http://172.245.56.116:8000/topics/{topic_id}?token={token}", headers=headers)
+                f"http://172.245.56.116:8000/topics/{topic_id}", headers=headers)
 
             if response_topic.status_code == 404:
                 return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
@@ -193,7 +193,7 @@ class TopicService:
 
             # Get category details to check if it's hidden
             response_category = await client.get(
-                f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
+                f"http://172.245.56.116:8000/categories/{category_id}", headers=headers)
 
             if response_category.status_code == 404:
                 return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
@@ -220,7 +220,7 @@ class TopicService:
 
             # Post the reply using the correct API endpoint
             response = await client.post(
-                f"http://172.245.56.116:8000/replies/{topic_id}?token={token}",
+                f"http://172.245.56.116:8000/replies/{topic_id}",
                 json={"content": content_with_br},
                 headers=headers
             )

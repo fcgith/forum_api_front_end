@@ -120,8 +120,8 @@ class CategoryService:
 
         # Get category details to check if it's hidden
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
+            response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}", headers=headers)
 
             if response_category.status_code == 404:
                 raise not_found
@@ -144,8 +144,9 @@ class CategoryService:
             # Return to the form with an error message if required fields are missing
             # Get the category details to maintain consistency with get_topic_form
             async with httpx.AsyncClient() as client:
-                headers = {"Cache-Control": "no-cache"}
-                response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
+                headers = {"Cache-Control": "no-cache", "Authorization": token}
+                response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}",
+                                                    headers=headers)
 
                 if response_category.status_code == 404:
                     raise not_found
@@ -178,7 +179,8 @@ class CategoryService:
 
             async with httpx.AsyncClient() as check_client:
                 # Get category details to check if it's hidden
-                response_category = await check_client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers={"Cache-Control": "no-cache"})
+                response_category = await check_client.get(f"http://172.245.56.116:8000/categories/{category_id}",
+                                                           headers={"Cache-Control": "no-cache", "Authorization": token})
 
                 if response_category.status_code == 404:
                     raise not_found
@@ -225,7 +227,9 @@ class CategoryService:
 
                 # Return to the form with the error message
                 # Get the category details to maintain consistency with get_topic_form
-                response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers={"Cache-Control": "no-cache"})
+                response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}",
+                                                     headers={"Cache-Control": "no-cache", "Authorization": token}
+                                                     )
 
                 if response_category.status_code == 404:
                     raise not_found
@@ -259,8 +263,9 @@ class CategoryService:
                 permission_type = await PermissionService.check_category_permission(request, category_id)
 
                 async with httpx.AsyncClient() as client:
-                    headers = {"Cache-Control": "no-cache"}
-                    response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}?token={token}", headers=headers)
+                    headers = {"Cache-Control": "no-cache", "Authorization": token}
+                    response_category = await client.get(f"http://172.245.56.116:8000/categories/{category_id}",
+                                                         headers=headers)
 
                     if response_category.status_code == 404:
                         raise not_found

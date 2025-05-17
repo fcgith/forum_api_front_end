@@ -17,7 +17,7 @@ class SearchService:
     async def search(cls, request: Request, search: str, page: int, sort: str):
         user_data = await AuthService.get_user_data_from_cookie(request)
         if not user_data["is_authenticated"]:
-            raise not_authorized
+            return cls.get_main_page(request)
 
         token = Cookies.get_access_token_from_cookie(request)
 
@@ -25,7 +25,7 @@ class SearchService:
         # Subtract 1 from page number because API uses 0-based indexing
         api_page = page - 1
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
             response = await client.get(
                 f"http://172.245.56.116:8000/topics/?token={token}&search={search}&page={api_page}&sort={sort}",
                 headers=headers

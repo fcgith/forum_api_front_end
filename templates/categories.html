@@ -30,12 +30,12 @@
                                     <i class="bi bi-folder2 me-2 category-icon"></i>{{ category.name }}
                                     {% if category.locked %}
                                         <span class="badge bg-danger ms-2 badge-pill">
-                                            <i class="bi bi-lock-fill"></i>
+                                            <i class="bi bi-lock-fill"></i> Locked
                                         </span>
                                     {% endif %}
                                     {% if category.hidden %}
                                         <span class="badge bg-secondary ms-2 badge-pill">
-                                            <i class="bi bi-eye-slash-fill"></i>
+                                            <i class="bi bi-eye-slash-fill"></i> Hidden
                                         </span>
                                         {% if not category.locked %}
                                             {% if category.permission_type|lower == "read_only_access" %}
@@ -89,6 +89,11 @@
                 overflow: hidden;
             }
 
+            body.dark-theme .list-group {
+                background-color: #2d2d2d;
+                border-color: #444;
+            }
+
             .category-item {
                 padding: 1.5rem;
                 border-left: 4px solid #0d6efd;
@@ -96,14 +101,30 @@
                 border-bottom: 1px solid rgba(0,0,0,0.05);
             }
 
+            body.dark-theme .category-item {
+                border-left: 4px solid #8ab4f8;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+            }
+
             .category-item:nth-child(even) {
                 background-color: #f8f9fa;
+            }
+
+            body.dark-theme .category-item:nth-child(even) {
+                background-color: #333;
             }
 
             .category-item:hover {
                 background-color: rgba(13, 110, 253, 0.05);
                 transform: translateX(5px);
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+            body.dark-theme .category-item:hover {
+                background-color: rgba(138, 180, 248, 0.1);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.4);
             }
 
             .category-name {
@@ -119,6 +140,10 @@
                 transition: all 0.3s ease;
             }
 
+            body.dark-theme .category-icon {
+                color: #8ab4f8;
+            }
+
             .category-item:hover .category-icon {
                 transform: scale(1.2);
             }
@@ -126,6 +151,19 @@
             .category-description {
                 max-width: 700px;
                 transition: all 0.3s ease;
+            }
+
+            /* Text colors for dark theme */
+            body.dark-theme .text-primary {
+                color: #8ab4f8 !important;
+            }
+
+            body.dark-theme .text-secondary {
+                color: #9e9e9e !important;
+            }
+
+            body.dark-theme .text-muted {
+                color: #aaa !important;
             }
 
             /* Badge styling */
@@ -138,21 +176,37 @@
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
 
+            body.dark-theme .badge-pill {
+                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            }
+
             .category-item:hover .badge-pill {
                 transform: translateY(-2px);
                 box-shadow: 0 4px 6px rgba(0,0,0,0.15);
             }
 
+            body.dark-theme .category-item:hover .badge-pill {
+                box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            }
+
             .topics-count {
                 font-size: 0.85rem;
                 padding: 0.4rem 0.8rem;
-                box-shadow: 0 2px 5px rgba(13, 110, 253, 0.2);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
                 transition: all 0.3s ease;
+            }
+
+            body.dark-theme .topics-count {
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             }
 
             .category-item:hover .topics-count {
                 transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+
+            body.dark-theme .category-item:hover .topics-count {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             }
 
             /* Arrow hover effect */
@@ -163,8 +217,32 @@
                 transition: all 0.3s ease;
             }
 
+            body.dark-theme .hover-box:hover .hover-arrow {
+                color: #8ab4f8;
+            }
+
             .hover-arrow {
                 transition: all 0.3s ease;
+            }
+
+            /* Form control styling for dark theme */
+            body.dark-theme .form-control {
+                background-color: #333;
+                border-color: #444;
+                color: #e0e0e0;
+            }
+
+            body.dark-theme .form-control:focus {
+                border-color: #8ab4f8;
+                box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25);
+                background-color: #3a3a3a;
+            }
+
+            /* Alert styling for dark theme */
+            body.dark-theme .alert-info {
+                background-color: #1e3a5f;
+                border-color: #2c5282;
+                color: #e0e0e0;
             }
 
             .category_hide_filter {

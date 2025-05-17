@@ -142,6 +142,14 @@
         box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
         scrollbar-width: thin;
         scrollbar-color: rgba(13, 110, 253, 0.5) #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    body.dark-theme .messages-container {
+        background-color: #1a1a1a;
+        border-color: rgba(255,255,255,0.1);
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        scrollbar-color: rgba(138, 180, 248, 0.5) #1a1a1a;
     }
 
     .messages-container::-webkit-scrollbar {
@@ -153,10 +161,19 @@
         border-radius: 10px;
     }
 
+    body.dark-theme .messages-container::-webkit-scrollbar-track {
+        background: #1a1a1a;
+    }
+
     .messages-container::-webkit-scrollbar-thumb {
         background-color: rgba(13, 110, 253, 0.5);
         border-radius: 10px;
         border: 2px solid #f8f9fa;
+    }
+
+    body.dark-theme .messages-container::-webkit-scrollbar-thumb {
+        background-color: rgba(138, 180, 248, 0.5);
+        border: 2px solid #1a1a1a;
     }
 
     .message-bubble {
@@ -165,6 +182,10 @@
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
+    }
+
+    body.dark-theme .message-bubble {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 
     .message-bubble::before {
@@ -178,9 +199,17 @@
         pointer-events: none;
     }
 
+    body.dark-theme .message-bubble::before {
+        background: linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0));
+    }
+
     .message-bubble:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    body.dark-theme .message-bubble:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     }
 
     .left-message {
@@ -199,6 +228,10 @@
         border-left: 10px solid transparent;
     }
 
+    body.dark-theme .left-message::before {
+        border-top-color: #0d6efd; /* Keep the same color or adjust if needed */
+    }
+
     .right-message {
         border-top-right-radius: 0.3rem;
         position: relative;
@@ -213,6 +246,10 @@
         height: 0;
         border-top: 10px solid #198754;
         border-right: 10px solid transparent;
+    }
+
+    body.dark-theme .right-message::before {
+        border-top-color: #198754; /* Keep the same color or adjust if needed */
     }
 
     .message-content {
@@ -267,10 +304,22 @@
         height: 45px;
     }
 
+    body.dark-theme .message-input-container .form-control {
+        border-color: rgba(138, 180, 248, 0.3);
+        background-color: #333;
+        color: #e0e0e0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
     .message-input-container .form-control:focus {
         border-color: #0d6efd;
         box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         transform: translateY(-2px);
+    }
+
+    body.dark-theme .message-input-container .form-control:focus {
+        border-color: #8ab4f8;
+        box-shadow: 0 0 0 0.25rem rgba(138, 180, 248, 0.25);
     }
 
     .message-input-container .btn {
@@ -284,9 +333,17 @@
         transition: all 0.3s ease;
     }
 
+    body.dark-theme .message-input-container .btn {
+        box-shadow: 0 2px 5px rgba(138, 180, 248, 0.3);
+    }
+
     .message-input-container .btn:hover {
         transform: translateY(-2px) rotate(15deg);
         box-shadow: 0 4px 8px rgba(13, 110, 253, 0.4);
+    }
+
+    body.dark-theme .message-input-container .btn:hover {
+        box-shadow: 0 4px 8px rgba(138, 180, 248, 0.4);
     }
 
     .message-input-container .btn i {
@@ -356,9 +413,17 @@
         background: linear-gradient(45deg, #0d6efd, #0dcaf0);
     }
 
+    body.dark-theme .user-avatar-container {
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+    }
+
     .user-avatar-container:hover {
         transform: scale(1.05);
         box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
+    }
+
+    body.dark-theme .user-avatar-container:hover {
+        box-shadow: 0 0 15px rgba(138, 180, 248, 0.5);
     }
 
     .conversation-user-avatar {
@@ -367,14 +432,27 @@
         transition: all 0.3s ease;
     }
 
+    body.dark-theme .conversation-user-avatar {
+        border: 3px solid #2d2d2d;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
     .badge {
         transition: all 0.3s ease;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
+    body.dark-theme .badge {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
     .badge:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    body.dark-theme .badge:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     }
 </style>
 

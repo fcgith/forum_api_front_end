@@ -24,7 +24,7 @@
                         <i class="bi bi-chat-square-text me-1"></i> {{ conversations|length }} Conversations
                     </span>
                 </div>
-                <a href="/conversations/new" class="btn btn-primary">
+                <a href="/conversations/new" class="btn btn-primary rounded-pill px-4">
                     <i class="bi bi-plus-circle me-1"></i> New Conversation
                 </a>
             </div>
@@ -93,13 +93,21 @@
             .conversation-badge {
                 font-size: 0.9rem;
                 padding: 0.5rem 0.8rem;
-                box-shadow: 0 2px 5px rgba(13, 110, 253, 0.2);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
                 transition: all 0.3s ease;
+            }
+
+            body.dark-theme .conversation-badge {
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             }
 
             .conversation-badge:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+
+            body.dark-theme .conversation-badge:hover {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             }
 
             .conversation-item {
@@ -112,6 +120,15 @@
             .conversation-item:hover {
                 background-color: rgba(13, 110, 253, 0.05);
                 transform: translateX(5px);
+            }
+
+            /* Dark theme variants */
+            body.dark-theme .conversation-item {
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+
+            body.dark-theme .conversation-item:hover {
+                background-color: rgba(138, 180, 248, 0.1);
             }
 
             .hover-box:hover .hover-arrow {
@@ -139,6 +156,11 @@
                 transition: all 0.3s ease;
             }
 
+            body.dark-theme .conversation-avatar {
+                border: 2px solid #8ab4f8;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            }
+
             .username-text {
                 transition: all 0.3s ease;
             }
@@ -161,7 +183,11 @@
 
             .conversation-item:hover .admin-badge {
                 transform: translateY(-2px);
-                box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            }
+
+            body.dark-theme .conversation-item:hover .admin-badge {
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
             }
 
             .timestamp {
@@ -174,6 +200,35 @@
 
             .conversation-item:hover .timestamp {
                 background-color: rgba(13, 110, 253, 0.2);
+            }
+
+            body.dark-theme .timestamp {
+                background-color: rgba(138, 180, 248, 0.15);
+            }
+
+            body.dark-theme .conversation-item:hover .timestamp {
+                background-color: rgba(138, 180, 248, 0.25);
+            }
+
+            /* Button styling for dark theme */
+            body.dark-theme .btn-primary {
+                background-color: #1e3a5f;
+                border-color: #2c5282;
+            }
+
+            body.dark-theme .btn-primary:hover {
+                background-color: #2c5282;
+                border-color: #3a6da0;
+            }
+
+            body.dark-theme .btn-outline-secondary {
+                color: #aaa;
+                border-color: #666;
+            }
+
+            body.dark-theme .btn-outline-secondary:hover {
+                background-color: #444;
+                color: #e0e0e0;
             }
 
             .animate-icon {

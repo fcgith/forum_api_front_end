@@ -132,9 +132,18 @@
         transition: all 0.3s ease;
     }
 
+    body.dark-theme .admin-card {
+        background-color: #2d2d2d;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
     .admin-card:hover {
         box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25), 0 15px 25px rgba(0, 0, 0, 0.2);
         transform: translateY(-10px);
+    }
+
+    body.dark-theme .admin-card:hover {
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 15px 25px rgba(0, 0, 0, 0.4);
     }
 
     /* Card header styling */
@@ -143,13 +152,39 @@
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
+    body.dark-theme .card-header {
+        background-color: rgba(138, 180, 248, 0.15);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
     /* Table styling */
     .table {
         background-color: #f8f9fa;
     }
 
+    body.dark-theme .table {
+        background-color: #333;
+        color: #e0e0e0;
+    }
+
+    body.dark-theme .table th,
+    body.dark-theme .table td {
+        background-color: #333;
+        color: #e0e0e0;
+        border-color: #444;
+    }
+
     .table tr:hover {
         background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    body.dark-theme .table tr:hover {
+        background-color: rgba(138, 180, 248, 0.1);
+    }
+
+    body.dark-theme .table tr:hover td,
+    body.dark-theme .table tr:hover th {
+        background-color: rgba(138, 180, 248, 0.1);
     }
 
     /* Button styling */
@@ -159,9 +194,42 @@
         transition: all 0.3s ease;
     }
 
+    body.dark-theme .btn-outline-success {
+        color: #81c784;
+        border-color: #81c784;
+    }
+
+    body.dark-theme .btn-outline-primary {
+        color: #8ab4f8;
+        border-color: #8ab4f8;
+    }
+
+    body.dark-theme .btn-outline-danger {
+        color: #e57373;
+        border-color: #e57373;
+    }
+
     .btn-outline-success:hover, .btn-outline-primary:hover, .btn-outline-danger:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    body.dark-theme .btn-outline-success:hover {
+        background-color: #1e3a2d;
+        color: #e0e0e0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    body.dark-theme .btn-outline-primary:hover {
+        background-color: #1e3a5f;
+        color: #e0e0e0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    body.dark-theme .btn-outline-danger:hover {
+        background-color: #3a1e1e;
+        color: #e0e0e0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     }
 
     /* Badge styling */
@@ -174,14 +242,34 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
+    body.dark-theme .badge:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
     /* Avatar styling */
     .rounded-circle {
         border: 2px solid #0d6efd;
         transition: all 0.3s ease;
     }
 
+    body.dark-theme .rounded-circle {
+        border: 2px solid #8ab4f8;
+    }
+
     .rounded-circle:hover {
         transform: scale(1.05);
+    }
+
+    body.dark-theme .bg-light {
+        background-color: #333 !important;
+    }
+
+    body.dark-theme .text-dark {
+        color: #e0e0e0 !important;
+    }
+
+    body.dark-theme .text-muted {
+        color: #aaa !important;
     }
 
     /* Icon animations */

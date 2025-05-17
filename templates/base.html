@@ -8,6 +8,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title>{{ title|default("Forum API Frontend") }}</title>
+    <script>
+        // Function to get cookie value
+        function getCookie(name) {
+            const nameEQ = name + '=';
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // Apply theme immediately to prevent flash
+        const savedTheme = getCookie('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
+    </script>
     <style>
         html, body {
             height: 100%;
@@ -18,11 +37,15 @@
             flex-direction: column;
             min-height: 100vh;
             background-color: #f8f9fa;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Dark Theme Styles */
-        body.dark-theme {
+        html.dark-theme {
+            background-color: #121212;
+        }
+
+        body.dark-theme,
+        html.dark-theme body {
             background-color: #121212;
             color: #e0e0e0;
         }
@@ -491,10 +514,12 @@
             function setTheme(isDark) {
                 if (isDark) {
                     document.body.classList.add('dark-theme');
+                    document.documentElement.classList.add('dark-theme');
                     darkIcon.classList.add('d-none');
                     lightIcon.classList.remove('d-none');
                 } else {
                     document.body.classList.remove('dark-theme');
+                    document.documentElement.classList.remove('dark-theme');
                     lightIcon.classList.add('d-none');
                     darkIcon.classList.remove('d-none');
                 }

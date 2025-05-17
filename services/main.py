@@ -13,11 +13,10 @@ class MainService:
 
     @classmethod
     async def index_page_logged_in(cls, request, user_data):
-        api_url = "http://172.245.56.116:8000/categories/?token="
         token = Cookies.get_access_token_from_cookie(request)
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
-            response = await client.get(f"{api_url}{token}", headers=headers)
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
+            response = await client.get(f"http://172.245.56.116:8000/categories/", headers=headers)
             data = user_data
             data["admin"] = True if user_data["admin"] > 0 else False
             if response.status_code == 200:

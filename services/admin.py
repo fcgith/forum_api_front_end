@@ -156,9 +156,9 @@ class AdminService:
 
         # Fetch all categories from the API
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
             response = await client.get(
-                f"http://172.245.56.116:8000/categories/?token={token}",
+                f"http://172.245.56.116:8000/categories/",
                 headers=headers
             )
 
@@ -204,7 +204,7 @@ class AdminService:
 
             # Fetch all categories again to display the updated list
             categories_response = await client.get(
-                f"http://172.245.56.116:8000/categories/?token={token}",
+                f"http://172.245.56.116:8000/categories/",
                 headers={"Cache-Control": "no-cache"}
             )
 
@@ -255,9 +255,9 @@ class AdminService:
 
         # Fetch all categories from the API
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
             response = await client.get(
-                f"http://172.245.56.116:8000/categories/?token={token}",
+                f"http://172.245.56.116:8000/categories/",
                 headers=headers
             )
 
@@ -297,8 +297,8 @@ class AdminService:
 
             # Fetch all categories again to display the updated list
             categories_response = await client.get(
-                f"http://172.245.56.116:8000/categories/?token={token}",
-                headers={"Cache-Control": "no-cache"}
+                f"http://172.245.56.116:8000/categories/",
+                headers={"Cache-Control": "no-cache", "Authorization": token}
             )
 
             if categories_response.status_code != 200:
@@ -412,9 +412,9 @@ class AdminService:
 
         # Fetch all categories from the API
         async with httpx.AsyncClient() as client:
-            headers = {"Cache-Control": "no-cache"}
+            headers = {"Cache-Control": "no-cache", "Authorization": token}
             response = await client.get(
-                f"http://172.245.56.116:8000/categories/?token={token}",
+                f"http://172.245.56.116:8000/categories/",
                 headers=headers
             )
 
@@ -457,8 +457,8 @@ class AdminService:
 
             # Fetch all categories again to display the updated list
             categories_response = await client.get(
-                f"http://172.245.56.116:8000/categories/?token={token}",
-                headers={"Cache-Control": "no-cache"}
+                f"http://172.245.56.116:8000/categories/",
+                headers={"Cache-Control": "no-cache", "Authorization": token}
             )
 
             if categories_response.status_code != 200:
@@ -495,14 +495,15 @@ class AdminService:
                 data,
                 headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
             )
+
     @classmethod
     async def get_view_privileged_users_form(cls, request):
         user_data = await cls.verify_admin(request)
         token = Cookies.get_access_token_from_cookie(request)
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"http://172.245.56.116:8000/categories/?token={token}",
-                headers={"Cache-Control": "no-cache"}
+                f"http://172.245.56.116:8000/categories/",
+                headers={"Cache-Control": "no-cache", "Authorization": token}
             )
             if response.status_code != 200:
                 raise not_authorized
@@ -525,8 +526,8 @@ class AdminService:
         async with httpx.AsyncClient() as client:
             # Get categories for the dropdown
             categories_response = await client.get(
-                f"http://172.245.56.116:8000/categories/?token={token}",
-                headers={"Cache-Control": "no-cache"}
+                f"http://172.245.56.116:8000/categories/",
+                headers={"Cache-Control": "no-cache", "Authorization": token}
             )
             if categories_response.status_code != 200:
                 raise not_authorized

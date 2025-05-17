@@ -150,7 +150,7 @@ class ConversationsService:
 
         # Send the message to the API
         async with httpx.AsyncClient() as client:
-            headers = {"Content-Type": "application/json", "Cache-Control": "no-cache"}
+            headers = {"Content-Type": "application/json", "Cache-Control": "no-cache", "Authorization": token}
             try:
                 response = await client.post(
                     f"http://172.245.56.116:8000/conversations/messages/",

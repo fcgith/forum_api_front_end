@@ -500,15 +500,14 @@
                 }
             }
 
-            // Check for saved theme preference or use system preference
+            // Check for saved theme preference or use light theme as default
             const savedTheme = getCookie('theme');
             if (savedTheme) {
                 setTheme(savedTheme === 'dark');
             } else {
-                // Use system preference as default
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                setTheme(prefersDark);
-                setCookie('theme', prefersDark ? 'dark' : 'light', 365);
+                // Use light theme as default
+                setTheme(false);
+                setCookie('theme', 'light', 365);
             }
 
             // Toggle theme on button click

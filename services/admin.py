@@ -205,7 +205,7 @@ class AdminService:
             # Fetch all categories again to display the updated list
             categories_response = await client.get(
                 f"http://172.245.56.116:8000/categories/",
-                headers={"Cache-Control": "no-cache"}
+                headers={"Cache-Control": "no-cache", "Authorization": token}
             )
 
             if categories_response.status_code != 200:
